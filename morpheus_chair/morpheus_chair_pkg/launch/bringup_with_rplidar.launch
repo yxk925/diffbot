@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+	<arg name="laser_frame_id" default="rplidar_laser_link" />
+	<include file="$(find morpheus_chair_pkg)/launch/rplidar.launch" >
+		<arg name="laser_frame_id" value="$(arg laser_frame_id)" />
+	</include>
+    <include file="$(find morpheus_chair_pkg)/launch/motor_driver_start.launch"/>
+    <!--include file="$(find morpheus_chair_pkg)/launch/camera_bringup.launch"/-->
+    <include file="$(find morpheus_chair_pkg)/launch/joy_teleop_twist.launch"/>
+</launch>
