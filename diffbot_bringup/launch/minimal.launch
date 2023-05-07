@@ -22,6 +22,7 @@
   <!--node name="motor_driver" pkg="grove_motor_driver" type="motor_driver.py" respawn="false"
       output="screen" ns="diffbot" /-->
   
+    <include file="$(find MPU9255)/launch/imu.launch"/>
     <include file="$(find morpheus_chair_pkg)/launch/motor_driver_start.launch"/>
     <include file="$(find morpheus_chair_pkg)/launch/joy_teleop_twist.launch"/>
 
