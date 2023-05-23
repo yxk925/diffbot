@@ -9,7 +9,7 @@ from rgb_hsv import BGR_HSV
 
 
 class LineFollower(object):
-    def __init__(self, rgb_to_track, colour_error_perc = 10.0,colour_cal=False, camera_topic="/morpheus_bot/raspicam_node/image_raw", cmd_vel_topic="/morpheus_bot/cmd_vel"):
+    def __init__(self, rgb_to_track, colour_error_perc = 10.0,colour_cal=False, camera_topic="/morpheus_bot/raspicam_node/image_raw", cmd_vel_topic="/diffbot/mobile_base_controller/cmd_vel"):
 
         self._colour_cal = colour_cal
         self._colour_error_perc = colour_error_perc

@@ -7,7 +7,7 @@ from motor_driver import MotorDriver
 class RobotMover(object):
 
     def __init__(self, value_BASE_PWM, value_MULTIPLIER_STANDARD, value_MULTIPLIER_PIVOT, value_simple_mode):
-        rospy.Subscriber("/morpheus_bot/cmd_vel", Twist, self.cmd_vel_callback)
+        rospy.Subscriber("/diffbot/mobile_base_controller/cmd_vel", Twist, self.cmd_vel_callback)
         self.motor_driver = MotorDriver( i_BASE_PWM=value_BASE_PWM,
                                          i_MULTIPLIER_STANDARD=value_MULTIPLIER_STANDARD,
                                          i_MULTIPLIER_PIVOT=value_MULTIPLIER_PIVOT,
