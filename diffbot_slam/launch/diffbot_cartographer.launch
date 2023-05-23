@@ -14,14 +14,16 @@
 <launch>
   <!-- Arguments -->
   <arg name="configuration_basename" default="diffbot_lds_2d.lua"/>
-
+  <arg name="scan_topic"  default="diffbot/scan"/>
+    
   <!-- Run cartographer node -->
   <node name="cartographer_node" pkg="cartographer_ros" type="cartographer_node" 
     args="-configuration_directory $(find diffbot_slam)/config
           -configuration_basename $(arg configuration_basename)"
       output="screen">
     <remap from="imu" to="diffbot/imu/data" />
-    <remap from="odom" to="diffbot/odometry/filtered" />
+    <remap from="odom" to="diffbot/mobile_base_controller/odom" />
+    <remap from="scan" to="$(arg scan_topic)"/>
   </node>
 
   <!-- cartographer_occupancy_grid_node -->
