@@ -3,7 +3,7 @@
   <!-- The lua scripts are required for cartographer, unused here -->
   <arg name="configuration_basename" default="diffbot_lds_2d.lua"/>
   <arg name="sensor_range" default="1.0"/>
-  <arg name="cmd_vel_topic" default="diffbot/mobile_base_controller/cmd_vel" />
+  <arg name="cmd_vel_topic" default="/morpheus_bot/cmd_vel" />
   <arg name="odom_topic" default="diffbot/mobile_base_controller/odom" />
   <arg name="local_planner" default="dwb" doc="Local planner can be either dwa, base, teb or pose"/>
 
