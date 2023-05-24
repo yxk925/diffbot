@@ -12,3 +12,20 @@ laser:
     max: 3.1415
   color: Gazebo/Grey
   enable_gpu: false
+
+imu:
+  mass: 0.
+  radius: 0.015     # Wheel radius in m
+  length: 0.005      # Wheel length in m, considering is as a cylinder
+  size:
+    x: 0.001
+    y: 0.001
+    z: 0.001
+  #type: 'mpu' # choose one camera type [mpu, bosch]
+  dx: 0.0
+  dy: 0.0
+  dz: 0.0
+  mesh: '' # Name of the mesh files. Leave it empty ('') to have a red box
+  #mesh: ''
+  scale: '0.001 0.001 0.001'
+  color: Gazebo/FlatBlack  

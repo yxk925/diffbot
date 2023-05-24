@@ -62,6 +62,12 @@
   </xacro:motor>
 
   <!-- Sensors -->
+
+  <xacro:imu_sensor parent_link="base_link"
+                    sensor_prop="${sensor_prop}">
+    <origin xyz="0 0 0" rpy="0 0 0" /> 
+  </xacro:imu_sensor>
+
   <xacro:laser prefix="rplidar" parent_link="base_link"
                    sensor_prop="${sensor_prop}"
                    enable_gpu="${sensor_prop['laser']['enable_gpu']}">
