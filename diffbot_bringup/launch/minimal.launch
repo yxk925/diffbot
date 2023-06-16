@@ -22,9 +22,10 @@
   <!--node name="motor_driver" pkg="grove_motor_driver" type="motor_driver.py" respawn="false"
       output="screen" ns="diffbot" /-->
   
-    <include file="$(find MPU9255)/launch/imu.launch"/>
+    <!--include file="$(find MPU9255)/launch/imu.launch"/-->
+    <include file="$(find rtimulib_ros)/launch/rtimulib_ros.launch"/>
     <include file="$(find morpheus_chair_pkg)/launch/motor_driver_start.launch"/>
-    <include file="$(find morpheus_chair_pkg)/launch/joy_teleop_twist.launch"/>
+    <!--include file="$(find morpheus_chair_pkg)/launch/joy_teleop_twist.launch"/-->
 
   <!-- Including the following launch file from diffbot_base package will -->
   <!-- Load the robot description onto the parameter server -->
