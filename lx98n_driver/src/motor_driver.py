@@ -15,23 +15,19 @@ class MotorDriver:
         # and the following bits "10" specify the polarity of the left motor,
         # "10" means the M+ is "positive
         self.motor = {
-            'left': {
-                'dir': 0b10,
-                'val': 0,
-            },
-            'right': {
-                'dir': 0b01,
-                'val': 0,
-            },
+            'left': 0,
+            'right': 0,
         }
 
     def left_motor_callback(self, msg):
+        rospy.loginfo_once(f"left_motor_callback, {msg.data}")
         self.motor['left'] = msg.data
 
         self.update_motors()
 
 
     def right_motor_callback(self, msg):
+        rospy.loginfo_once(f"right_motor_callback, {msg.data}")
         self.motor['right'] = msg.data
 
         self.update_motors()
@@ -40,8 +36,8 @@ class MotorDriver:
     def update_motors(self):
         left = self.motor['left']
         right = self.motor['right']
+        rospy.logdebug(f"update_motors, left: {left}, right: {right}")
         self.motor_driver.MotorSpeedSetAB(right, left)
-        rospy.logdebug(f"Direction {direction:b}, left: {left}, right: {right}")
 
     def stop_motors(self):
         self.motor_driver.MotorSpeedSetAB(0, 0)
@@ -52,12 +48,13 @@ if __name__ == '__main__':
     rospy.init_node('motor_driver')
 
     motor_driver = MotorDriver(address=0x0f)
+    motor_driver.stop_motors();
 
     # Topics for the motors
     sub_left = rospy.Subscriber('motor_left', Int32, motor_driver.left_motor_callback, queue_size=10)
     sub_right = rospy.Subscriber('motor_right', Int32, motor_driver.right_motor_callback, queue_size=10)
 
-    rospy.loginfo("Ready to receive motor commands")
+    rospy.loginfo("[Lx98N_driver]Ready to receive motor commands")
 
     # Start everything
     # This will block until the node is killed
