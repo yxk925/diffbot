@@ -11,3 +11,7 @@ repositories:
     type: git
     url: https://github.com/ros-mobile-robots/remo_description
     version: main
+  src/rtimulib_ros:
+    type: git
+    url: https://github.com/romainreignier/rtimulib_ros.git
+    version: master
