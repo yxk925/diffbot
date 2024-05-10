@@ -21,6 +21,8 @@ class RobotMover(object):
         linear_speed = msg.linear.x
         angular_speed = msg.angular.z
 
+        rospy.loginfo("[RobotMover]cmd_vel_callback, %s, %s " % (str(linear_speed), str(angular_speed)));
+
         # Decide Speed
         self.motor_driver.set_cmd_vel(linear_speed, angular_speed)
 
