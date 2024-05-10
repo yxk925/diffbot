@@ -50,6 +50,6 @@ logs
 docs/plots
 .vscode
 .pio
-
+.idea/
 # intermediate documentation
 site

@@ -132,6 +132,7 @@ include_directories(
 add_library(diffbot_hw_interface
   src/diffbot_hw_interface.cpp
   src/pid.cpp
+  src/fake_pid.cpp
 )
 
 ## Add cmake target dependencies of the library

@@ -4,6 +4,7 @@
  
 int main(int argc, char **argv)
 {
+    ROS_INFO("[diffbot_base]main");
     // Initialize the ROS node
     ros::init(argc, argv, "diffbot_hw_interface");
     ros::NodeHandle nh;
