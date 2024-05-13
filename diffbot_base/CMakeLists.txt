@@ -171,13 +171,18 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-## Declare DiffBot Hardware Interface library
-add_library(add_executable
+add_executable(base_controller_node
+  src/base_controller/lib/wiringpi-encoder/encoder.cpp
   src/base_controller/lib/encoder/encoder_diffbot.cpp
   src/base_controller/lib/pid/diffbot_pid.cpp
   src/base_controller/lib/motor_controllers/lx98n/lx98n_controller.cpp
   src/base_controller/lib/motor_controllers/lx98n/lx98n_motor_driver.cpp
   src/base_controller/src/main.cpp
+)
+target_link_libraries(base_controller_node
+  ${catkin_LIBRARIES}
+  wiringPi
+  pthread
 )
 
 #############

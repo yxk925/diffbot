@@ -530,7 +530,7 @@ void diffbot::BaseController<TMotorController, TMotorDriver>::read()
     // Avoid having too many publishers
     // Otherwise error like 'wrong checksum for topic id and msg'
     // and 'Write timeout: Write timeout' happen.
-    //pub_encoders_.publish(&encoder_msg_);
+    pub_encoders_.publish(encoder_msg_);
 }
 
 template <typename TMotorController, typename TMotorDriver>
