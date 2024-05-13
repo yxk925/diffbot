@@ -185,6 +185,16 @@ target_link_libraries(base_controller_node
   pthread
 )
 
+catkin_add_gtest(utest
+  src/base_controller/lib/wiringpi-encoder/encoder.cpp
+  src/base_controller/lib/encoder/encoder_diffbot.cpp
+  src/base_controller/test/encoders/test_encoders.cpp)
+
+target_link_libraries(utest
+  ${catkin_LIBRARIES}
+  wiringPi
+  pthread
+)
 #############
 ## Install ##
 #############
