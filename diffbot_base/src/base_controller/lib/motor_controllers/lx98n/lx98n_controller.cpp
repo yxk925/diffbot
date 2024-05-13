@@ -1,20 +1,22 @@
-#include "adafruit_feather_wing/adafruit_feather_wing.h"
+#include "lx98n_controller.h"
+#include "lx98n_motor_driver.h"
 
+using namespace diffbot;
 
-diffbot::AdafruitMotorController::AdafruitMotorController(uint8_t motor_num, uint8_t addr)
+diffbot::Lx98nMotorController::Lx98nMotorController(uint8_t motor_num, uint8_t addr)
 {
-    motor_driver_ = Adafruit_MotorShield(addr);
     // Select which 'port' (motor pin) M1, M2, M3 or M4.
-    pMotor_ = motor_driver_.getMotor(motor_num);
+    //pMotor_ = motor_driver_.getMotor(motor_num);
 }
 
-void diffbot::AdafruitMotorController::begin(uint16_t freq)
+void diffbot::Lx98nMotorController::begin(uint16_t freq)
 {
-    motor_driver_.begin(freq);
+    //motor_driver_.begin(freq);
 }
 
-void diffbot::AdafruitMotorController::setSpeed(int value)
+void diffbot::Lx98nMotorController::setSpeed(int value)
 {
+    /*
     if (value > 0)
     {
         pMotor_->run(FORWARD);
@@ -33,4 +35,5 @@ void diffbot::AdafruitMotorController::setSpeed(int value)
     }
 
     pMotor_->setSpeed(value);
+    */
 }

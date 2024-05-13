@@ -2,17 +2,13 @@
  * Author: Franz Pucher
  */
 
-#ifndef ADAFRUIT_MOTOR_CONTROLLER_H
-#define ADAFRUIT_MOTOR_CONTROLLER_H
+#ifndef LX98N_MOTOR_CONTROLLER_H
+#define LX98N_MOTOR_CONTROLLER_H
 
-// The special bit of code in this example is the use of Arduino's Wire library. 
-// Wire is a I2C library that simplifies reading and writing to the I2C bus.
-#include <Wire.h>
-#include <Adafruit_MotorShield.h>
+#include <motor_controller_interface/motor_controller_interface.h>
+#include <motor_controllers/lx98n/lx98n_motor_driver.h>
 
-#include "diffbot_base_config.h"
-
-#include <motor_controller_interface.h>
+#include <cstdint>
 
 namespace diffbot {
 
@@ -25,7 +21,7 @@ namespace diffbot {
      * \note for more details see
      * https://learn.adafruit.com/adafruit-stepper-dc-motor-featherwing/library-reference
      */
-    class AdafruitMotorController : public MotorControllerIntf<Adafruit_MotorShield>
+    class Lx98nMotorController : public MotorControllerIntf<Lx98nMotorDriver>
     {
         public:
             /** \brief Construct an \ref AdafruitMotorController for a single motor
@@ -38,7 +34,7 @@ namespace diffbot {
              * \param motor_num Number of the motor to control (one of 1, 2, 3, 4). Diffbot uses motors 3 and 4.
              * \param addr i2c address used to communicate with the motor driver.
              */
-            AdafruitMotorController(uint8_t motor_num, uint8_t addr=0x60);
+            Lx98nMotorController(uint8_t motor_num, uint8_t addr=0x60);
 
             /** \brief Initializes the communication with the motor driver
              * 
@@ -69,8 +65,6 @@ namespace diffbot {
             
 
         private:
-            // Pointer to the motor that is controlled by this motor controller.
-            Adafruit_DCMotor *pMotor_;
     };
 
 }

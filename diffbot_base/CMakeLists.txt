@@ -166,6 +166,20 @@ target_link_libraries(${PROJECT_NAME}
   ${catkin_LIBRARIES}
 )
 
+include_directories(
+  src/base_controller/lib
+  ${catkin_INCLUDE_DIRS}
+)
+
+## Declare DiffBot Hardware Interface library
+add_library(add_executable
+  src/base_controller/lib/encoder/encoder_diffbot.cpp
+  src/base_controller/lib/pid/diffbot_pid.cpp
+  src/base_controller/lib/motor_controllers/lx98n/lx98n_controller.cpp
+  src/base_controller/lib/motor_controllers/lx98n/lx98n_motor_driver.cpp
+  src/base_controller/src/main.cpp
+)
+
 #############
 ## Install ##
 #############
