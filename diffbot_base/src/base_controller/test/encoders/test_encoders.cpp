@@ -19,16 +19,21 @@ TEST(TestEncoder, testRpm)
   long positionRight = -999;
 
   ros::Time startTime = ros::Time::now();
+  ros::Rate rate(1);
 
   while(ros::ok()) {
+    rate.sleep();
+    ros::Time now = ros::Time::now();
     encoderLeft.jointState();
     encoderRight.jointState();
     long newLeft, newRight;
     newLeft = encoderLeft.read();
     newRight = encoderRight.read();
     if (newLeft != positionLeft || newRight != positionRight) {
-      printf("posiont = (%d, %d), rpm = (%d, %d), angVel = (%d, %d)\n",
+      printf("time:%f, posiont = (%d, %d), tps=(%d, %d), rpm = (%d, %d), angVel = (%f, %f)\n",
+        now.toSec(),
         newLeft, newRight, 
+        encoderLeft.getTPS(), encoderRight.getTPS(),
         encoderLeft.getRPM(), encoderRight.getRPM(),
         encoderLeft.angularVelocity(), encoderRight.angularVelocity());
 
@@ -36,15 +41,15 @@ TEST(TestEncoder, testRpm)
       positionRight = newRight;
     }
 
-    ros::Time now = ros::Time::now();
 
     double lasted = now.toSec() - startTime.toSec();
-    if (lasted > 10) {
+    if (lasted > 100) {
       printf("timeout reached");
       break;
     }
 
     ros::spinOnce();
+    
   }
 
   EXPECT_EQ(5, 5);

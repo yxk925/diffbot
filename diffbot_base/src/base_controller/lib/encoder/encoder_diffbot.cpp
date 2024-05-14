@@ -5,10 +5,13 @@ diffbot::Encoder::Encoder(ros::NodeHandle& nh, uint8_t pin1, uint8_t pin2, int e
   : nh_(nh)
   , encoder(pin1, pin2)
   , encoder_resolution_(encoder_resolution)
-  , prev_update_time_(0, 0)
+  , prev_update_time_(ros::Time::now())
+  , last_update_time_(ros::Time::now())
   , prev_encoder_ticks_(0)
+  , last_encoder_ticks_(0)
+  , tps_(0)
+  , rpm_(0)
 {
-
 }
 
 diffbot::JointState diffbot::Encoder::jointState()
@@ -16,22 +19,35 @@ diffbot::JointState diffbot::Encoder::jointState()
     long encoder_ticks = encoder.read();
     // This function calculates the motor's rotational (angular) velocity based on encoder ticks and delta time
     ros::Time current_time = ros::Time::now();
-    ros::Duration dt = current_time - prev_update_time_;
 
-    // Convert the delta time to seconds
-    double dts = dt.toSec();
+    if (last_encoder_ticks_ != 0) {
+      ros::Duration dt = current_time - last_update_time_;
 
-    //calculate wheel's speed (RPM)
-    double delta_ticks = encoder_ticks - prev_encoder_ticks_;
-    double delta_angle = ticksToAngle(delta_ticks);
+      // Convert the delta time to seconds
+      double dts = dt.toSec();
+      double dtm = dts / 60;
 
-    joint_state_.angular_position_ += delta_angle;
+      if (dts > 0) {
+        //calculate wheel's speed (RPM)
+        double delta_ticks = encoder_ticks - last_encoder_ticks_;
+        double delta_angle = ticksToAngle(delta_ticks);
 
+        joint_state_.angular_position_ += delta_angle;
+        joint_state_.angular_velocity_ = delta_angle / dts;
 
-    joint_state_.angular_velocity_ = delta_angle / dts;
+        tps_ = delta_ticks / dts;
 
-    prev_update_time_ = current_time;
-    prev_encoder_ticks_ = encoder_ticks;
+        rpm_ = (delta_ticks / encoder_resolution_) / dtm;        
+      } else {
+        ROS_ERROR("[Encoder::jointState]dts == 0 !!!");
+      }
+    }
+
+    prev_update_time_ = last_update_time_;
+    prev_encoder_ticks_ = last_encoder_ticks_;
+
+    last_update_time_ = current_time;
+    last_encoder_ticks_ = encoder_ticks;
 
     return joint_state_;
 }
@@ -55,21 +71,12 @@ double diffbot::Encoder::ticksToAngle(const int &ticks) const
 }
 
 
-int diffbot::Encoder::getRPM()
+long diffbot::Encoder::getRPM()
 {
-    long encoder_ticks = encoder.read();
-    //this function calculates the motor's RPM based on encoder ticks and delta time
-    ros::Time current_time = ros::Time::now();
-    ros::Duration dt = current_time - prev_update_time_;
+    return rpm_;
+}
 
-    //convert the time from milliseconds to minutes
-    double dtm = dt.toSec() / 60;
-    double delta_ticks = encoder_ticks - prev_encoder_ticks_;
-
-    //calculate wheel's speed (RPM)
-
-    prev_update_time_ = current_time;
-    prev_encoder_ticks_ = encoder_ticks;
-
-    return (delta_ticks / encoder_resolution_) / dtm;
+long diffbot::Encoder::getTPS()
+{
+  return tps_;
 }

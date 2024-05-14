@@ -55,7 +55,8 @@ namespace diffbot
          * 
          * \returns revolutions per minute
          */
-        int getRPM();
+        long getRPM();
+        long getTPS();
 
 
         double angularPosition();
@@ -115,14 +116,20 @@ namespace diffbot
         JointState joint_state_;
 
     private:
+        bool debug = true;
         // ROS node handle, which provides the current time to compute the angular velocity from the current tick count
         ros::NodeHandle& nh_;
         // Number of tick counts for one full revolution of the wheel (not the motor shaft). Keep track of gear reduction ratio.
         int encoder_resolution_;
         // Previous time when the \ref getRPM or \ref angularVelocity method was called to calculated the delta update time.
         ros::Time prev_update_time_;
+        ros::Time last_update_time_;
         // Previous encoder tick count when the \ref getRPM or \ref angularVelocity method was called to calculated the delta tick count.
         long prev_encoder_ticks_;
+        long last_encoder_ticks_;
+
+        long tps_;
+        long rpm_;
     };
 }
 
