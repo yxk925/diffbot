@@ -15,7 +15,7 @@ diffbot::JointState diffbot::Encoder::jointState()
 {
     long encoder_ticks = encoder.read();
     // This function calculates the motor's rotational (angular) velocity based on encoder ticks and delta time
-    ros::Time current_time = nh_.now();
+    ros::Time current_time = ros::Time::now();
     ros::Duration dt = current_time - prev_update_time_;
 
     // Convert the delta time to seconds
@@ -59,7 +59,7 @@ int diffbot::Encoder::getRPM()
 {
     long encoder_ticks = encoder.read();
     //this function calculates the motor's RPM based on encoder ticks and delta time
-    ros::Time current_time = nh_.now();
+    ros::Time current_time = ros::Time::now();
     ros::Duration dt = current_time - prev_update_time_;
 
     //convert the time from milliseconds to minutes

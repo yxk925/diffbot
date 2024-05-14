@@ -5,9 +5,9 @@
 #ifndef DIFFBOT_ENCODER_H
 #define DIFFBOT_ENCODER_H
 
-#include <Encoder.h>
+#include <wiringpi-encoder/encoder.h>
 
-#include <ros.h>
+#include <ros/ros.h>
 
 
 namespace diffbot

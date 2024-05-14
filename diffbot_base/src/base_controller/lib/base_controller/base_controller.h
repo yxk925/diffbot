@@ -6,7 +6,7 @@
 #define DIFFBOT_BASE_CONTROLLER_H
 
 
-#include <ros.h>
+#include <ros/ros.h>
 #include <diffbot_msgs/EncodersStamped.h>
 #include <diffbot_msgs/WheelsCmdStamped.h>
 #include <diffbot_msgs/AngularVelocities.h>
@@ -14,10 +14,13 @@
 #include <std_msgs/Empty.h>
 #include <sensor_msgs/JointState.h>
 
-#include "diffbot_base_config.h"
-#include "encoder_diffbot.h"
-#include "adafruit_feather_wing/adafruit_feather_wing.h"
-#include "pid.h"
+#include "config/diffbot_base_config.h"
+#include "encoder/encoder_diffbot.h"
+#include "motor_controllers/lx98n/lx98n_controller.h"
+#include "motor_controllers/lx98n/lx98n_motor_driver.h"
+#include "pid/diffbot_pid.h"
+
+#include <string>
 
 
 namespace diffbot {
@@ -184,10 +187,10 @@ namespace diffbot {
              * @param start Start time of the program
              */
             inline LastUpdateTime(ros::Time start)
-                : command_received(start.toSec(), start.toNsec())
-                , control(start.toSec(), start.toNsec())
-                , imu(start.toSec(), start.toNsec())
-                , debug(start.toSec(), start.toNsec()) {};
+                : command_received(start.toSec(), start.toNSec())
+                , control(start.toSec(), start.toNSec())
+                , imu(start.toSec(), start.toNSec())
+                , debug(start.toSec(), start.toNSec()) {};
         } last_update_time_;
 
         /**
@@ -344,7 +347,7 @@ namespace diffbot {
 
         int encoder_resolution_;
 
-        ros::Subscriber<std_msgs::Empty, BaseController<TMotorController, TMotorDriver>> sub_reset_encoders_;
+        ros::Subscriber sub_reset_encoders_;
 
         // ROS Publisher setup to publish left and right encoder ticks
         // This uses the custom encoder ticks message that defines an array of two integers
@@ -357,17 +360,17 @@ namespace diffbot {
         MotorControllerIntf<TMotorDriver>* p_motor_controller_right_;
         MotorControllerIntf<TMotorDriver>* p_motor_controller_left_;
 
-        ros::Subscriber<diffbot_msgs::WheelsCmdStamped, BaseController<TMotorController, TMotorDriver>> sub_wheel_cmd_velocities_;
+        ros::Subscriber sub_wheel_cmd_velocities_;
         float wheel_cmd_velocity_left_ = 0.0;
         float wheel_cmd_velocity_right_ = 0.0;
 
         int motor_cmd_left_ = 0;
         int motor_cmd_right_ = 0;
 
-        ros::Subscriber<diffbot_msgs::PIDStamped, BaseController<TMotorController, TMotorDriver>> sub_pid_left_;
-        ros::Subscriber<diffbot_msgs::PIDStamped, BaseController<TMotorController, TMotorDriver>> sub_pid_right_;
-        PID motor_pid_left_;
-        PID motor_pid_right_;
+        ros::Subscriber sub_pid_left_;
+        ros::Subscriber sub_pid_right_;
+        diffbot::Pid motor_pid_left_;
+        diffbot::Pid motor_pid_right_;
 
         // DEBUG
         bool debug_;
@@ -386,14 +389,11 @@ diffbot::BaseController<TMotorController, TMotorDriver>
     : nh_(nh)
     , encoder_left_(nh, ENCODER_LEFT_H1, ENCODER_LEFT_H2, ENCODER_RESOLUTION)
     , encoder_right_(nh, ENCODER_RIGHT_H1, ENCODER_RIGHT_H2, ENCODER_RESOLUTION)
-    , sub_reset_encoders_("reset", &BC<TMotorController, TMotorDriver>::resetEncodersCallback, this)
-    , pub_encoders_("encoder_ticks", &encoder_msg_)
-    , pub_measured_joint_states_("measured_joint_states", &msg_measured_joint_states_)
-    , sub_wheel_cmd_velocities_("wheel_cmd_velocities", &BC<TMotorController, TMotorDriver>::commandCallback, this)
-    , last_update_time_(nh.now())
+   
+    , last_update_time_(ros::Time::now())
     , update_rate_(UPDATE_RATE_IMU, UPDATE_RATE_CONTROL, UPDATE_RATE_DEBUG)
-    , sub_pid_left_("pid_left", &BC<TMotorController, TMotorDriver>::pidLeftCallback, this)
-    , sub_pid_right_("pid_right", &BC<TMotorController, TMotorDriver>::pidRightCallback, this)
+    
+    
     , motor_pid_left_(PWM_MIN, PWM_MAX, K_P, K_I, K_D)
     , motor_pid_right_(PWM_MIN, PWM_MAX, K_P, K_I, K_D)
 {
@@ -405,60 +405,61 @@ diffbot::BaseController<TMotorController, TMotorDriver>
 template <typename TMotorController, typename TMotorDriver>
 void diffbot::BaseController<TMotorController, TMotorDriver>::setup()
 {
-    nh_.initNode();
-    nh_.advertise(pub_encoders_);
-
+    // nh_.initNode(); 
+    pub_encoders_ = nh_.advertise<diffbot_msgs::EncodersStamped>("encoder_ticks", 1000);
+    
     // msg_measured_joint_states_ is of type sensor_msgs::JointState
     // which contains float[] joint arrays of undefined size.
     // For rosserial to work it is required to reserve the memory using malloc
     // and setting the *_length member appropriately.
     // http://wiki.ros.org/rosserial/Overview/Limitations#Arrays
-    msg_measured_joint_states_.position = (float*)malloc(sizeof(float) * 2);
-    msg_measured_joint_states_.position_length = 2;
-    msg_measured_joint_states_.velocity = (float*)malloc(sizeof(float) * 2);
-    msg_measured_joint_states_.velocity_length = 2;
-    nh_.advertise(pub_measured_joint_states_);
+    msg_measured_joint_states_.position.resize(2);
+    msg_measured_joint_states_.velocity.resize(2);
+    pub_measured_joint_states_ = nh_.advertise<sensor_msgs::JointState>("measured_joint_states", 1000);
 
-    nh_.subscribe(sub_wheel_cmd_velocities_);
-    nh_.subscribe(sub_reset_encoders_);
+    sub_wheel_cmd_velocities_ = nh_.subscribe("wheel_cmd_velocities", 1000, &BC<TMotorController, TMotorDriver>::commandCallback, this);
+    
+    sub_reset_encoders_ = nh_.subscribe("reset", 1000, &BC<TMotorController, TMotorDriver>::resetEncodersCallback, this);
 
-    nh_.subscribe(sub_pid_left_);
-    nh_.subscribe(sub_pid_right_);
+    sub_pid_left_ = nh_.subscribe("pid_left", 1000, &BC<TMotorController, TMotorDriver>::pidLeftCallback, this);
+    sub_pid_right_ = nh_.subscribe("pid_right", 1000, &BC<TMotorController, TMotorDriver>::pidRightCallback, this);
 
-    while (!nh_.connected())
-    {
-        nh_.spinOnce();
-    }
+    //while (!nh_.connected())
+    //{
+        ros::spinOnce();
+    //}
 }
 
 template <typename TMotorController, typename TMotorDriver>
 void diffbot::BaseController<TMotorController, TMotorDriver>::init()
 {
-    nh_.loginfo("Get Parameters from Parameter Server");
-    nh_.getParam("/diffbot/encoder_resolution", &this->encoder_resolution_);
-    String log_msg = String("/diffbot/encoder_resolution: ") + String(encoder_resolution_);
-    nh_.loginfo(log_msg.c_str());
-    nh_.getParam("/diffbot/mobile_base_controller/wheel_radius", &wheel_radius_);
-    log_msg = String("/diffbot/mobile_base_controller/wheel_radius: ") + String(wheel_radius_);
-    nh_.loginfo(log_msg.c_str());
-    nh_.getParam("/diffbot/mobile_base_controller/linear/x/max_velocity", &max_linear_velocity_);
-    log_msg = String("/diffbot/mobile_base_controller/linear/x/max_velocity: ") + String(max_linear_velocity_);
-    nh_.loginfo(log_msg.c_str());
-    nh_.getParam("/diffbot/debug/base_controller", &debug_);
-    log_msg = String("/diffbot/debug/base_controller: ") + String(debug_);
-    nh_.loginfo(log_msg.c_str());
+    ROS_INFO("Get Parameters from Parameter Server");
+    nh_.getParam("/diffbot/encoder_resolution", this->encoder_resolution_);
+    std::string log_msg = std::string("/diffbot/encoder_resolution: ") + std::to_string(encoder_resolution_);
+    ROS_INFO(log_msg.c_str());
+    nh_.getParam("/diffbot/mobile_base_controller/wheel_radius", wheel_radius_);
+    log_msg = std::string("/diffbot/mobile_base_controller/wheel_radius: ") + std::to_string(wheel_radius_);
+    ROS_INFO(log_msg.c_str());
+    nh_.getParam("/diffbot/mobile_base_controller/linear/x/max_velocity", max_linear_velocity_);
+    log_msg = std::string("/diffbot/mobile_base_controller/linear/x/max_velocity: ") + std::to_string(max_linear_velocity_);
+    ROS_INFO(log_msg.c_str());
+    nh_.getParam("/diffbot/debug/base_controller", debug_);
+    log_msg = std::string("/diffbot/debug/base_controller: ") + std::to_string(debug_);
+    ROS_INFO(log_msg.c_str());
 
-    nh_.loginfo("Initialize DiffBot Wheel Encoders");
+    ROS_INFO("Initialize DiffBot Wheel Encoders");
     encoder_left_.resolution(encoder_resolution_);
     encoder_right_.resolution(encoder_resolution_);
 
     std_msgs::Empty reset;
     this->resetEncodersCallback(reset);
-    delay(1);
+    usleep(1000);
+   
+
 
     max_angular_velocity_ = max_linear_velocity_ / wheel_radius_;
 
-    delay(1000);
+    usleep(1000*1000);
 }
 
 template <typename TMotorController, typename TMotorDriver>
@@ -472,7 +473,7 @@ void diffbot::BaseController<TMotorController, TMotorDriver>::commandCallback(co
 
     // Used for the eStop. In case no diffbot_msgs::WheelsCmdStamped messages are received on the wheel_cmd_velocities 
     // topic, the eStop method is called (see main loop in main.cpp)
-    lastUpdateTime().command_received = nh_.now();
+    lastUpdateTime().command_received = ros::Time::now();
 }
 
 // ROS Subscriber setup to reset both encoders to zero
@@ -482,7 +483,7 @@ void diffbot::BaseController<TMotorController, TMotorDriver>::resetEncodersCallb
     // reset both back to zero.
     this->encoder_left_.write(0);
     this->encoder_right_.write(0);
-    this->nh_.loginfo("Reset both wheel encoders to zero");
+    ROS_INFO("Reset both wheel encoders to zero");
 }
 
 
@@ -518,7 +519,7 @@ void diffbot::BaseController<TMotorController, TMotorDriver>::read()
 
     msg_measured_joint_states_.velocity[0] = joint_state_left_.angular_velocity_;
     msg_measured_joint_states_.velocity[1] = joint_state_right_.angular_velocity_;
-    pub_measured_joint_states_.publish(&msg_measured_joint_states_);
+    pub_measured_joint_states_.publish(msg_measured_joint_states_);
 
     // get the current tick count of each encoder
     ticks_left_ = encoder_left_.read();
@@ -529,7 +530,7 @@ void diffbot::BaseController<TMotorController, TMotorDriver>::read()
     // Avoid having too many publishers
     // Otherwise error like 'wrong checksum for topic id and msg'
     // and 'Write timeout: Write timeout' happen.
-    //pub_encoders_.publish(&encoder_msg_);
+    pub_encoders_.publish(encoder_msg_);
 }
 
 template <typename TMotorController, typename TMotorDriver>
@@ -565,33 +566,33 @@ template <typename TMotorController, typename TMotorDriver>
 void diffbot::BaseController<TMotorController, TMotorDriver>::printDebug()
 {
     /*
-    String log_msg =
-            String("\nRead:\n") +
-                String("ticks_left_ \t ticks_right_ \t measured_ang_vel_left \t measured_ang_vel_right\n") +
-                String(ticks_left_) + String("\t") + String(ticks_right_) + String("\t") +
-                String(joint_state_left_.angular_velocity_) + String("\t") + String(joint_state_right_.angular_velocity_) +
-            String("\nWrite:\n") + 
-                String("motor_cmd_left_ \t motor_cmd_right_ \t pid_left_error \t pid_right_error\n") +
-                String(motor_cmd_left_) + String("\t") + String(motor_cmd_right_) + String("\t") +
-                //String("pid_left \t pid_right\n") +
-                String(motor_pid_left_.error()) + String("\t") + String(motor_pid_right_.error());
+    std::string log_msg =
+            std::string("\nRead:\n") +
+                std::string("ticks_left_ \t ticks_right_ \t measured_ang_vel_left \t measured_ang_vel_right\n") +
+                std::string(ticks_left_) + std::string("\t") + std::string(ticks_right_) + std::string("\t") +
+                std::string(joint_state_left_.angular_velocity_) + std::string("\t") + std::string(joint_state_right_.angular_velocity_) +
+            std::string("\nWrite:\n") + 
+                std::string("motor_cmd_left_ \t motor_cmd_right_ \t pid_left_error \t pid_right_error\n") +
+                std::string(motor_cmd_left_) + std::string("\t") + std::string(motor_cmd_right_) + std::string("\t") +
+                //std::string("pid_left \t pid_right\n") +
+                std::string(motor_pid_left_.error()) + std::string("\t") + std::string(motor_pid_right_.error());
     */
 
-    String log_msg =
-            String("\nRead:\n") +
-                String("ticks_left_: ") + String(ticks_left_) +
-                String("\nticks_right_: ") + String(ticks_right_) +
-                String("\nmeasured_ang_vel_left: ") + String(joint_state_left_.angular_velocity_) +
-                String("\nmeasured_ang_vel_right: ") + String(joint_state_right_.angular_velocity_) +
-                String("\nwheel_cmd_velocity_left_: ") + String(wheel_cmd_velocity_left_) +
-                String("\nwheel_cmd_velocity_right_: ") + String(wheel_cmd_velocity_right_) +
+    std::string log_msg =
+            std::string("\nRead:\n") +
+                std::string("ticks_left_: ") + std::to_string(ticks_left_) +
+                std::string("\nticks_right_: ") + std::to_string(ticks_right_) +
+                std::string("\nmeasured_ang_vel_left: ") + std::to_string(joint_state_left_.angular_velocity_) +
+                std::string("\nmeasured_ang_vel_right: ") + std::to_string(joint_state_right_.angular_velocity_) +
+                std::string("\nwheel_cmd_velocity_left_: ") + std::to_string(wheel_cmd_velocity_left_) +
+                std::string("\nwheel_cmd_velocity_right_: ") + std::to_string(wheel_cmd_velocity_right_) +
 
-            String("\nWrite:\n") +
-                String("motor_cmd_left_: ") + String(motor_cmd_left_) +
-                String("\nmotor_cmd_right_: ") + String(motor_cmd_right_) +
-                String("\npid_left_errors (p, i, d): ") + String(motor_pid_left_.proportional()) + String(" ") + String(motor_pid_left_.integral()) + String(" ") + String(motor_pid_left_.derivative()) +
-                String("\npid_right_error (p, i, d): ") + String(motor_pid_right_.proportional()) + String(" ") + String(motor_pid_right_.integral()) + String(" ") + String(motor_pid_right_.derivative());
-    nh_.loginfo(log_msg.c_str());
+            std::string("\nWrite:\n") +
+                std::string("motor_cmd_left_: ") + std::to_string(motor_cmd_left_) +
+                std::string("\nmotor_cmd_right_: ") + std::to_string(motor_cmd_right_) +
+                std::string("\npid_left_errors (p, i, d): ") + std::to_string(motor_pid_left_.proportional()) + std::string(" ") + std::to_string(motor_pid_left_.integral()) + std::string(" ") + std::to_string(motor_pid_left_.derivative()) +
+                std::string("\npid_right_error (p, i, d): ") + std::to_string(motor_pid_right_.proportional()) + std::string(" ") + std::to_string(motor_pid_right_.integral()) + std::string(" ") + std::to_string(motor_pid_right_.derivative());
+    ROS_INFO(log_msg.c_str());
 }
 
 
