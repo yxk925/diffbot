@@ -10,10 +10,10 @@ class Lx98N_MotorDriverWiringpi(object):
     def __init__(self):
 
         #self.PIN = 18
-        self.DIR_A1 = 5 # Values below are all wPis
-        self.DIR_A2 = 7
-        self.DIR_B1 = 10
-        self.DIR_B2 = 9
+        self.DIR_A1 = 7 # Values below are all wPis
+        self.DIR_A2 = 5
+        self.DIR_B1 = 9 
+        self.DIR_B2 = 10
         self.PWM_A = 2
         self.PWM_B = 15
 
