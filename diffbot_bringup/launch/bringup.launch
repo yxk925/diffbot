@@ -1,4 +1,5 @@
 <launch>
+    <param name="tf_prefix" value="ohbot001" />
     <!--arg name="model" default="$(env DIFFBOT_MODEL)" doc="model type [diffbot, remo]"/-->
     <arg name="model" default="diffbot" doc="model type [diffbot, remo]"/>
     
@@ -22,5 +23,3 @@
     <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
         output="screen" ns="diffbot" />
 </launch>
-
-

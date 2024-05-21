@@ -8,7 +8,7 @@
 
 namespace diffbot_base
 {
-    class PID : public control_toolbox::Pid
+    class DiffbotBasePID : public control_toolbox::Pid
     {
     public:
         /**
@@ -23,7 +23,7 @@ namespace diffbot_base
          * @param out_min The min computed output.
          * @param out_max The max computed output.
          */
-        PID(double p=0.0, double i=0.0, double d=0.0, double i_max=0.0, double i_min=0.0, bool antiwindup=false, double out_max=0.0, double out_min=0.0);
+        DiffbotBasePID(double p=0.0, double i=0.0, double d=0.0, double i_max=0.0, double i_min=0.0, bool antiwindup=false, double out_max=0.0, double out_min=0.0);
 
         /**
          * @brief Initialize the 

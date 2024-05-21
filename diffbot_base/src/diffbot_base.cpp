@@ -41,7 +41,9 @@ int main(int argc, char **argv)
         // If needed, its possible to define transmissions in software by calling the 
         // transmission_interface::ActuatorToJointPositionInterface::propagate()
         // after reading the joint states.
+        
         cm.update(time, period);
+        
         // In case of software transmissions, use 
         // transmission_interface::JointToActuatorEffortHandle::propagate()
         // to convert from the joint space to the actuator space.

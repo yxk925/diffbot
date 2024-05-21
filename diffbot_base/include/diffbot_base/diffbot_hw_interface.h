@@ -15,7 +15,7 @@
 #include <hardware_interface/joint_state_interface.h>
 #include <hardware_interface/joint_command_interface.h>
 
-#include <diffbot_base/fake_pid.h>
+#include <diffbot_base/diffbot_base_pid.h>
 
 
 namespace diffbot_base
@@ -226,7 +226,7 @@ namespace diffbot_base
         int encoder_ticks_[NUM_JOINTS];
         JointState measured_joint_states_[NUM_JOINTS];
 
-        FakePID pids_[NUM_JOINTS];
+        DiffbotBasePID pids_[NUM_JOINTS];
     };  // class DiffBotHWInterface
 
 }  // namespace

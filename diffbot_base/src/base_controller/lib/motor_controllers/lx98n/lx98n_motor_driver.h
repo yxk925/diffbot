@@ -5,7 +5,6 @@
 #ifndef LX98N_MOTOR_DRIVER_H
 #define LX98N_MOTOR_DRIVER_H
 
-#include <moveit/task_constructor/storage.h>
 
 namespace diffbot {
 

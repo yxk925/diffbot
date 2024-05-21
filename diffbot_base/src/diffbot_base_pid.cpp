@@ -1,9 +1,9 @@
 
-#include <diffbot_base/fake_pid.h>
+#include <diffbot_base/diffbot_base_pid.h>
 
 namespace diffbot_base
 {
-    FakePID::FakePID(double p, double i, double d, double i_max, double i_min, bool antiwindup, double out_max, double out_min)
+    DiffbotBasePID::DiffbotBasePID(double p, double i, double d, double i_max, double i_min, bool antiwindup, double out_max, double out_min)
     : control_toolbox::Pid()
     , dynamic_reconfig_initialized_(false)
     {
@@ -15,13 +15,12 @@ namespace diffbot_base
         out_max_ = out_max;
     }
 
-    void FakePID::init(ros::NodeHandle& nh, double f, double p, double i, double d, double i_max, double i_min, bool antiwindup, double out_max, double out_min)
+    void DiffbotBasePID::init(ros::NodeHandle& nh, double f, double p, double i, double d, double i_max, double i_min, bool antiwindup, double out_max, double out_min)
     {
-        ROS_INFO("Initialize FakePID");
+        ROS_INFO("Initialize DiffbotBasePID");
         f_ = f;
-        
-        error_ = 0.0;
         initPid(p, i, d, i_max, i_min, antiwindup);
+        error_ = 0.0;
 
         out_min_ = out_min;
         out_max_ = out_max;
@@ -29,11 +28,11 @@ namespace diffbot_base
         initDynamicReconfig(nh);
 
         Gains gains = getGains();
-        ROS_INFO_STREAM("Initialized FakePID: F=" << f << ", P=" << gains.p_gain_ << ", I=" << gains.i_gain_ << ", D=" << gains.d_gain_ << ", out_min=" << out_min_ << ", out_max=" << out_max_);
+        ROS_INFO_STREAM("Initialized DiffbotBasePID: F=" << f << ", P=" << gains.p_gain_ << ", I=" << gains.i_gain_ << ", D=" << gains.d_gain_ << ", out_min=" << out_min_ << ", out_max=" << out_max_);
 
     }
 
-    double FakePID::operator()(const double &measured_value, const double &setpoint, const ros::Duration &dt)
+    double DiffbotBasePID::operator()(const double &measured_value, const double &setpoint, const ros::Duration &dt)
     {
         // Compute error terms
         error_ = setpoint - measured_value;
@@ -53,43 +52,48 @@ namespace diffbot_base
         }
 
         // Use control_toolbox::Pid::computeCommand()
-        double output = setpoint;
-        ROS_DEBUG_STREAM_THROTTLE(1, "FakePID return setpoint as command: " << output);
+        double pid_output = computeCommand(error_, dt);
+        ROS_DEBUG_STREAM_THROTTLE(1, "DiffbotBasePID computed command: " << pid_output);
 
-        return output;
+        // Compute final output including feed forward term
+        double output = f_ * setpoint + pid_output;
+        double fin_output = clamp(output, out_min_, out_max_);
+
+        ROS_DEBUG_STREAM("  pid_output:" << pid_output << ", output:" << output << ", fin_output:" << fin_output);
+        return fin_output;
     }
 
-    void FakePID::getParameters(double &f, double &p, double &i, double &d, double &i_max, double &i_min)
+    void DiffbotBasePID::getParameters(double &f, double &p, double &i, double &d, double &i_max, double &i_min)
     {
         bool antiwindup;
         getParameters(f, p, i, d, i_max, i_min, antiwindup);
     }
 
-    void FakePID::getParameters(double &f, double &p, double &i, double &d, double &i_max, double &i_min, bool &antiwindup)
+    void DiffbotBasePID::getParameters(double &f, double &p, double &i, double &d, double &i_max, double &i_min, bool &antiwindup)
     {
         f = f_;
         // Call getGains from control_toolbox
         getGains(p, i, d, i_max, i_min, antiwindup);
     }
 
-    void FakePID::setParameters(double f, double p, double i, double d, double i_max, double i_min, bool antiwindup)
+    void DiffbotBasePID::setParameters(double f, double p, double i, double d, double i_max, double i_min, bool antiwindup)
     {
         f_ = f;
         setGains(p, i, d, i_max, i_min, antiwindup);
 
         Gains gains = getGains();
-        ROS_INFO_STREAM("Update FakePID Gains: F=" << f << ", P=" << gains.p_gain_ << ", I=" << gains.i_gain_ << ", D=" << gains.d_gain_ << ", out_min=" << out_min_ << ", out_max=" << out_max_);
+        ROS_INFO_STREAM("Update DiffbotBasePID Gains: F=" << f << ", P=" << gains.p_gain_ << ", I=" << gains.i_gain_ << ", D=" << gains.d_gain_ << ", out_min=" << out_min_ << ", out_max=" << out_max_);
     }
 
-    void FakePID::setOutputLimits(double output_max, double output_min)
+    void DiffbotBasePID::setOutputLimits(double output_max, double output_min)
     {
         out_max_ = output_max;
         out_min_ = output_min;
-        ROS_INFO_STREAM("Update FakePID output limits: lower=" << out_min_ << ", upper=" << out_max_);
+        ROS_INFO_STREAM("Update DiffbotBasePID output limits: lower=" << out_min_ << ", upper=" << out_max_);
     }
 
 
-    double FakePID::clamp(const double& value, const double& lower_limit, const double& upper_limit)
+    double DiffbotBasePID::clamp(const double& value, const double& lower_limit, const double& upper_limit)
     {
         if (value > upper_limit)
         {
@@ -105,9 +109,9 @@ namespace diffbot_base
         return value;
     }
 
-    void FakePID::initDynamicReconfig(ros::NodeHandle &node)
+    void DiffbotBasePID::initDynamicReconfig(ros::NodeHandle &node)
     {
-        ROS_INFO_STREAM_NAMED("fake_pid","Initializing dynamic reconfigure in namespace "
+        ROS_INFO_STREAM_NAMED("pid","Initializing dynamic reconfigure in namespace "
             << node.getNamespace());
 
         // Start dynamic reconfigure server
@@ -118,12 +122,12 @@ namespace diffbot_base
         updateDynamicReconfig();
 
         // Set callback
-        param_reconfig_callback_ = boost::bind(&FakePID::dynamicReconfigCallback, this, _1, _2);
+        param_reconfig_callback_ = boost::bind(&DiffbotBasePID::dynamicReconfigCallback, this, _1, _2);
         param_reconfig_server_->setCallback(param_reconfig_callback_);
-        ROS_INFO_NAMED("fake_pid", "Initialized dynamic reconfigure");
+        ROS_INFO_NAMED("pid", "Initialized dynamic reconfigure");
     }
 
-    void FakePID::updateDynamicReconfig()
+    void DiffbotBasePID::updateDynamicReconfig()
     {
         // Make sure dynamic reconfigure is initialized
         if(!dynamic_reconfig_initialized_)
@@ -139,7 +143,7 @@ namespace diffbot_base
         updateDynamicReconfig(config);
     }
 
-    void FakePID::updateDynamicReconfig(diffbot_base::ParametersConfig config)
+    void DiffbotBasePID::updateDynamicReconfig(diffbot_base::ParametersConfig config)
     {
         // Make sure dynamic reconfigure is initialized
         if(!dynamic_reconfig_initialized_)
@@ -151,9 +155,9 @@ namespace diffbot_base
         param_reconfig_mutex_.unlock();
     }
 
-    void FakePID::dynamicReconfigCallback(diffbot_base::ParametersConfig &config, uint32_t /*level*/)
+    void DiffbotBasePID::dynamicReconfigCallback(diffbot_base::ParametersConfig &config, uint32_t /*level*/)
     {
-        ROS_DEBUG_STREAM_NAMED("fake_pid","Dynamics reconfigure callback recieved.");
+        ROS_DEBUG_STREAM_NAMED("pid","Dynamics reconfigure callback recieved.");
 
         // Set the gains
         setParameters(config.f, config.p, config.i, config.d, config.i_clamp_max, config.i_clamp_min, config.antiwindup);

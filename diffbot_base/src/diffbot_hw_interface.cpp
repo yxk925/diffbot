@@ -117,7 +117,7 @@ namespace diffbot_base
             ros::NodeHandle nh(root_nh, pid_namespace);
             // TODO implement builder pattern to initialize values otherwise it is hard to see which parameter is what.
             pids_[i].init(nh, 0.8, 0.35, 0.5, 0.01, 3.5, -3.5, false, max_velocity_, -max_velocity_);
-            pids_[i].setOutputLimits(-max_velocity_, max_velocity_);
+            // pids_[i].setOutputLimits(max_velocity_, -max_velocity_);
         }
 
         // Register the JointStateInterface containing the read only joints
@@ -263,7 +263,7 @@ namespace diffbot_base
 
     bool DiffBotHWInterface::isReceivingMeasuredJointStates(const ros::Duration &timeout)
     {
-        ROS_INFO("Get number of measured joint states publishers");
+        ROS_INFO("Detect number of measured joint states publishers");
 
         ros::Time start = ros::Time::now();
         int num_publishers = sub_measured_joint_states_.getNumPublishers();
@@ -291,6 +291,7 @@ namespace diffbot_base
 
     void DiffBotHWInterface::loadURDF(const ros::NodeHandle &nh, std::string param_name)
     {
+        ROS_INFO_STREAM_NAMED(name_, "loadURDF param_name:" << param_name);
         std::string urdf_string;
         urdf_model_ = new urdf::Model();
 

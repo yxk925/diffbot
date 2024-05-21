@@ -16,6 +16,10 @@ namespace diffbot
     {
         double angular_position_;
         double angular_velocity_;
+        JointState() {
+            angular_position_ = 0;
+            angular_velocity_ = 0;
+        }
     };
 
 
