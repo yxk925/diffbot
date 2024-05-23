@@ -188,6 +188,7 @@
   </gazebo>
 </xacro:macro>
 
+
 <xacro:macro name="imu_sensor" params=" *joint_origin parent_link sensor_prop">
 
   <xacro:property name="mesh"
@@ -268,7 +269,6 @@
     </sensor>
   </gazebo>
 </xacro:macro>
-
 
 
 </robot>

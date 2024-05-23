@@ -1,0 +1,16 @@
+<launch>
+    <include file="$(find rtabmap_ros)/launch/rtabmap.launch">
+        <arg name="args" value="--delete_db_on_start  --Optimizer/GravitySigma 0.3"/>
+        <arg name="rgb_topic" value="/camera/color/image_raw"/>
+        <arg name="depth_topic" value="/camera/aligned_depth_to_color/image_raw"/>
+        <arg name="camera_info_topic" value="/camera/color/camera_info"/>
+        <arg name="depth_camera_info_topic" value="/camera/depth/camera_info"/>
+        <arg name="approx_sync" value="true"/>
+        <arg name="imu_topic" value="/rtabmap/imu"/>
+        <arg name="wait_imu_to_init" value="true"/>
+        <arg name="visual_odometry" value="false"/>
+        <arg name="odom_topic" value="/diffbot/mobile_base_controller/odom"/>
+        <arg name="rtabmapviz" value="false"/>
+        <arg name="rviz" value="false"/>
+    </include>
+</launch>
