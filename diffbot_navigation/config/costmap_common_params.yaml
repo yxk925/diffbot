@@ -10,11 +10,11 @@ raytrace_range: 3.5
 # [ [x1, y1], [x2, y2], ...., [xn, yn] ]. The footprint specification assumes the center point of the robot is at 
 # (0.0, 0.0) in the robot_base_frame and that the points are specified in meters, 
 # both clockwise and counter-clockwise orderings of points are supported.
-footprint: [[-0.08, -0.075], [-0.08, 0.075], [0.105, 0.075], [0.105, -0.075]]
+footprint: [[-0.15, -0.15], [-0.20, 0.15], [0.20, 0.15], [0.15, -0.15]]
 #robot_radius: 0.17
 
 # The radius in meters to which the map inflates obstacle cost values.
-inflation_radius: 0.5
+inflation_radius: 0.1
 # A scaling factor to apply to cost values during inflation. 
 # The cost function is computed as follows for all cells in the costmap further than the inscribed radius distance and 
 # closer than the inflation radius distance away from an actual obstacle: 
@@ -22,15 +22,16 @@ inflation_radius: 0.5
 # where costmap_2d::INSCRIBED_INFLATED_OBSTACLE is currently 254. 
 # NOTE: since the cost_scaling_factor is multiplied by a negative in the formula, 
 # increasing the factor will decrease the resulting cost values.
-cost_scaling_factor: 3.0
+cost_scaling_factor: 4.0
 
 # What map type to use. "voxel" or "costmap" are the supported types, 
 # with the difference between them being a 3D-view of the world vs. a 2D-view of the world.
-map_type: costmap
+map_type: voxel
 
 # The "observation_sources" parameter defines a list of sensors that are going to be passing information to 
 # the costmap separated by spaces. Each sensor is defined in the next lines.
-observation_sources: scan
+observation_sources: point_cloud_sensor
 # Definition of the "scan" observation source. Make sure to set the sensor_frame to the same 
 # name of the laser frame link that is defined in the robot_description. Otherwise the local costamp won't work.
-scan: {sensor_frame: rplidar_laser_link, data_type: LaserScan, topic: diffbot/scan, marking: true, clearing: true}
+#scan: {sensor_frame: rplidar_laser_link, data_type: LaserScan, topic: diffbot/scan, marking: true, clearing: true}
+point_cloud_sensor: {sensor_frame: camera_link, data_type: PointCloud2, topic: /rtabmap/local_grid_obstacle, marking: true, clearing: true}
