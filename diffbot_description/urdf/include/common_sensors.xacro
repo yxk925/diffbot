@@ -54,7 +54,7 @@
   <joint name="${prefix}_laser_joint" type="fixed">
     <parent link="${parent_link}"/>
     <child link="${prefix}_laser_link"/>
-    <origin xyz="${sensor_prop['laser']['dx']} ${sensor_prop['laser']['dy']} ${sensor_prop['laser']['dz']}" rpy="0 0 ${pi}"/>
+    <origin xyz="${sensor_prop['laser']['dx']} ${sensor_prop['laser']['dy']} ${sensor_prop['laser']['dz']}" rpy="0 0 0"/>
     <axis xyz="0 1 0" />
   </joint>
 
@@ -138,7 +138,7 @@
   </gazebo>
 
   <joint name="camera_joint" type="fixed">
-    <axis xyz="0 1 0" />
+    <axis xyz="0 0 0" />
     <xacro:insert_block name="joint_origin" />
     <parent link="${parent_link}"/>
     <child link="camera_link"/>
