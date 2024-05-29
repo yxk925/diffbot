@@ -34,6 +34,11 @@ namespace diffbot_base
 
     double DiffbotBasePID::operator()(const double &measured_value, const double &setpoint, const ros::Duration &dt)
     {
+        const double min_cmd = 0.001;
+        if (abs(setpoint) < min_cmd) {
+            return 0;
+        }
+        
         // Compute error terms
         error_ = setpoint - measured_value;
         ROS_DEBUG_STREAM_THROTTLE(1, "Error: " << error_);

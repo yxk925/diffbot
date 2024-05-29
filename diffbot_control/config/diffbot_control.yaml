@@ -48,10 +48,10 @@ diffbot:
         has_velocity_limits    : true
         max_velocity           : 0.326   # m/s
         has_acceleration_limits: true
-        max_acceleration       : 0.326   # m/s^2
+        max_acceleration       : 3.26   # m/s^2
     angular:
       z:
         has_velocity_limits    : true
-        max_velocity           : 1.5   # rad/s
+        max_velocity           : 0.3   # rad/s
         has_acceleration_limits: true
-        max_acceleration       : 2.293   # rad/s^2
+        max_acceleration       : 0.3   # rad/s^2

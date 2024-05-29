@@ -548,8 +548,8 @@ void diffbot::BaseController<TMotorController, TMotorDriver>::write()
     // Compute PID output
     // The value sent to the motor driver is calculated by the PID based on the error between commanded angular velocity vs measured angular velocity
     // The calculated PID ouput value is capped at -/+ MAX_RPM to prevent the PID from having too much error
-    motor_cmd_left_ = motor_pid_left_.compute(wheel_cmd_velocity_left_, joint_state_left_.angular_velocity_);
-    motor_cmd_right_ = motor_pid_right_.compute(wheel_cmd_velocity_right_, joint_state_right_.angular_velocity_);
+    motor_cmd_left_ = wheel_cmd_velocity_left_;
+    motor_cmd_right_ = wheel_cmd_velocity_right_;
 
     p_motor_controller_left_->setSpeed(motor_cmd_left_);
     p_motor_controller_right_->setSpeed(motor_cmd_right_);
