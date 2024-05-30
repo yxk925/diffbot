@@ -33,19 +33,16 @@ namespace diffbot_base
     }
 
     double DiffbotBasePID::operator()(const double &measured_value, const double &setpoint, const ros::Duration &dt)
-    {
-        const double min_cmd = 0.001;
-        if (abs(setpoint) < min_cmd) {
-            return 0;
-        }
-        
+    {   
+        // actually point can not be out of (min, max)
+        double act_setpoint = clamp(setpoint, out_min_, out_max_);     
         // Compute error terms
-        error_ = setpoint - measured_value;
+        error_ = act_setpoint - measured_value;
         ROS_DEBUG_STREAM_THROTTLE(1, "Error: " << error_);
 
         // Reset the i_error in case the p_error and the setpoint is zero
         // Otherwise there will always be a constant i_error_ that won't vanish
-        if (0.0 == setpoint && 0.0 == error_)
+        if (0.0 == setpoint)
         {
             // reset() will reset
             // p_error_last_ = 0.0;

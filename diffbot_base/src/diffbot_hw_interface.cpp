@@ -27,11 +27,12 @@ namespace diffbot_base
         // Load rosparams
         ros::NodeHandle rpnh(nh_, name_);
         std::size_t error = 0;
+        double max_velocity_line = 0;
         // Code API of rosparam_shortcuts:
         // http://docs.ros.org/en/noetic/api/rosparam_shortcuts/html/namespacerosparam__shortcuts.html#aa6536fe0130903960b1de4872df68d5d
         error += !rosparam_shortcuts::get(name_, rpnh, "joints", joint_names_);
         error += !rosparam_shortcuts::get(name_, nh_, "mobile_base_controller/wheel_radius", wheel_radius_);
-        error += !rosparam_shortcuts::get(name_, nh_, "mobile_base_controller/linear/x/max_velocity", max_velocity_);
+        error += !rosparam_shortcuts::get(name_, nh_, "mobile_base_controller/linear/x/max_velocity", max_velocity_line);
         // Get additional parameters from the diffbot_base/config/base.yaml which is stored on the parameter server
         error += !rosparam_shortcuts::get(name_, nh_, "encoder_resolution", encoder_resolution_);
         error += !rosparam_shortcuts::get(name_, nh_, "gain", gain_);
@@ -44,11 +45,12 @@ namespace diffbot_base
         wheel_diameter_ = 2.0 * wheel_radius_;
         //max_velocity_ = 0.2; // m/s
         // ros_control RobotHW needs velocity in rad/s but in the config its given in m/s
-        max_velocity_ = linearToAngular(max_velocity_);
+        max_velocity_ = linearToAngular(max_velocity_line);
 
 
         ROS_INFO_STREAM("mobile_base_controller/wheel_radius: " << wheel_radius_);
-        ROS_INFO_STREAM("mobile_base_controller/linear/x/max_velocity: " << max_velocity_);
+        ROS_INFO_STREAM("mobile_base_controller/linear/x/max_velocity: " << max_velocity_line);
+        ROS_INFO_STREAM("mobile_base_controller/linear/x/max_velocity_angle: " << max_velocity_);
         ROS_INFO_STREAM("encoder_resolution: " << encoder_resolution_);
         ROS_INFO_STREAM("gain: " << gain_);
         ROS_INFO_STREAM("trim: " << trim_);
@@ -116,7 +118,7 @@ namespace diffbot_base
             ROS_INFO_STREAM("pid namespace: " << pid_namespace);
             ros::NodeHandle nh(root_nh, pid_namespace);
             // TODO implement builder pattern to initialize values otherwise it is hard to see which parameter is what.
-            pids_[i].init(nh, 0.8, 0.35, 0.5, 0.01, 3.5, -3.5, false, max_velocity_, -max_velocity_);
+            pids_[i].init(nh, 0.9, 0.80, 0.8, 0.01, 3.5, -3.5, false, max_velocity_, -max_velocity_);
             // pids_[i].setOutputLimits(max_velocity_, -max_velocity_);
         }
 
