@@ -27,15 +27,15 @@
   <arg name="subscribe_rgb"  default="$(arg depth)"/>
 
   <arg name="with_camera" default="true"/>
-  <arg name="localization" default="false"/>
   <arg name="database_path" default="~/.ros/rtabmap.db"/>
-  <arg     if="$(arg localization)" name="rtabmap_args" default=""/>
-  <arg unless="$(arg localization)" name="rtabmap_args" default="-d"/>
+  <arg name="localization"            default="true"/>
+  <arg     if="$(arg localization)" name="args" value="--Optimizer/GravitySigma 0.3"/>
+  <arg unless="$(arg localization)" name="args" value="--Optimizer/GravitySigma 0.3 --delete_db_on_start"/>
 
 
   <group ns="rtabmap">
 
-    <node name="rtabmap" pkg="rtabmap_slam" type="rtabmap" output="screen" args="$(arg rtabmap_args)">
+    <node name="rtabmap" pkg="rtabmap_slam" type="rtabmap" output="screen" args="$(arg args)">
       <param name="database_path"       type="string" value="$(arg database_path)"/>
       <param name="frame_id"            type="string" value="base_footprint"/>
       <param name="subscribe_rgb"   type="bool" value="$(arg subscribe_rgb)"/>
@@ -67,6 +67,7 @@
       <!-- localization mode -->
       <param     if="$(arg localization)" name="Mem/IncrementalMemory" type="string" value="false"/>
       <param unless="$(arg localization)" name="Mem/IncrementalMemory" type="string" value="true"/>
+      <param name="Mem/InitWMWithAllNodes" type="string" value="$(arg localization)"/>
     </node>
 
   </group>

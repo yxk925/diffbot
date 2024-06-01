@@ -1,6 +1,9 @@
 <launch>
+    <arg name="localization"            default="false"/>
+
     <include file="$(find rtabmap_ros)/launch/rtabmap.launch">
-        <arg name="args" value="--delete_db_on_start  --Optimizer/GravitySigma 0.3"/>
+        <arg     if="$(arg localization)" name="args" value="--Optimizer/GravitySigma 0.3"/>
+        <arg unless="$(arg localization)" name="args" value="--Optimizer/GravitySigma 0.3 --delete_db_on_start"/>
         <arg name="rgb_topic" value="/camera/color/image_raw"/>
         <arg name="depth_topic" value="/camera/aligned_depth_to_color/image_raw"/>
         <arg name="camera_info_topic" value="/camera/color/camera_info"/>
@@ -12,5 +15,8 @@
         <arg name="odom_topic" value="/diffbot/mobile_base_controller/odom"/>
         <arg name="rtabmapviz" value="false"/>
         <arg name="rviz" value="false"/>
+        <arg name="localization"  value="$(arg localization)"/>
+
+
     </include>
 </launch>
