@@ -39,9 +39,9 @@ camera:
     y: 0.001
     z: 0.001
   #type: 'mpu' # choose one camera type [mpu, bosch]
-  dx: 0.0
+  dx: 0.080
   dy: 0.0
-  dz: 0.0
+  dz: 0.090
   mesh: '' # Name of the mesh files. Leave it empty ('') to have a red box
   #mesh: ''
   scale: '0.001 0.001 0.001'

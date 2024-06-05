@@ -66,7 +66,6 @@
   <xacro:camera_sensor parent_link="base_link"
                     sensor_prop="${sensor_prop}"
                     visualize="false">
-    <origin xyz="0.080 0 0.090" rpy="0 0 0" />
 
   </xacro:camera_sensor>
 

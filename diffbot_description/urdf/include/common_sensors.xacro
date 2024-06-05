@@ -19,7 +19,7 @@
   <link name="${prefix}_laser_link">
     <xacro:if value="${mesh != '' }" >
     <visual>
-      <origin xyz="0 0 0" rpy="0 0 ${pi}"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
         <mesh filename="package://${package_name}/meshes/sensors/${mesh}" />
       </geometry>
@@ -100,7 +100,7 @@
 
 
 
-<xacro:macro name="camera_sensor" params=" *joint_origin parent_link sensor_prop visualize mesh:='' ">
+<xacro:macro name="camera_sensor" params="parent_link sensor_prop visualize mesh:='' ">
   <link name="camera_link">
     <xacro:if value="${mesh != '' }" >
       <visual>
@@ -138,10 +138,10 @@
   </gazebo>
 
   <joint name="camera_joint" type="fixed">
-    <axis xyz="0 0 0" />
-    <xacro:insert_block name="joint_origin" />
     <parent link="${parent_link}"/>
     <child link="camera_link"/>
+    <origin xyz="${sensor_prop['camera']['dx']} ${sensor_prop['camera']['dy']} ${sensor_prop['camera']['dz']}" rpy="0 0 0"/>
+    <axis xyz="0 0 0" />
   </joint>
 
   <gazebo reference="camera_link">
