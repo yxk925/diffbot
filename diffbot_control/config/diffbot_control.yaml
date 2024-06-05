@@ -22,6 +22,7 @@ diffbot:
 
   mobile_base_controller:
     type: diff_drive_controller/DiffDriveController
+    enable_odom_tf: false
     publish_rate: 50
 
     left_wheel: 'front_left_wheel_joint'
