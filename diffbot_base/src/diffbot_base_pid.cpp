@@ -42,7 +42,7 @@ namespace diffbot_base
 
         // Reset the i_error in case the p_error and the setpoint is zero
         // Otherwise there will always be a constant i_error_ that won't vanish
-        if (0.0 == setpoint)
+        if (0.0 == setpoint && error_ == 0.00)
         {
             // reset() will reset
             // p_error_last_ = 0.0;
