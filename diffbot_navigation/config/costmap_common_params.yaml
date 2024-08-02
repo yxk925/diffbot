@@ -26,12 +26,12 @@ cost_scaling_factor: 4.0
 
 # What map type to use. "voxel" or "costmap" are the supported types, 
 # with the difference between them being a 3D-view of the world vs. a 2D-view of the world.
-map_type: voxel
+map_type: costmap
 
 # The "observation_sources" parameter defines a list of sensors that are going to be passing information to 
 # the costmap separated by spaces. Each sensor is defined in the next lines.
-observation_sources: scan point_cloud_sensor
+observation_sources: scan
 # Definition of the "scan" observation source. Make sure to set the sensor_frame to the same 
 # name of the laser frame link that is defined in the robot_description. Otherwise the local costamp won't work.
-scan: {sensor_frame: rplidar_laser_link, data_type: LaserScan, topic: /diffbot/scan, marking: false, clearing: true}
-point_cloud_sensor: {sensor_frame: camera_link, data_type: PointCloud2, topic: /rtabmap/local_grid_obstacle, marking: false, clearing: true}
+scan: {sensor_frame: rplidar_laser_link, data_type: LaserScan, topic: /diffbot/scan, marking: true, clearing: true}
+point_cloud_sensor: {sensor_frame: camera_link, data_type: PointCloud, topic: /drone_0_ego_planner_node/grid_map/occupancy_inflate, marking: true, clearing: true}

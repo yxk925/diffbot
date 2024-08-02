@@ -3,7 +3,7 @@
   <arg name="slam_method" default="gmapping" doc="slam type [gmapping, cartographer, hector, karto, frontier_exploration]"/>
   <!-- The lua scripts are required for cartographer -->
   <arg name="configuration_basename" default="diffbot_lds_2d.lua"/>
-  <arg name="open_rviz" default="true"/>
+  <arg name="open_rviz" default="false"/>
 
   <!-- DiffBot -->
   <!--include file="$(find diffbot_bringup)/launch/diffbot_remote.launch">

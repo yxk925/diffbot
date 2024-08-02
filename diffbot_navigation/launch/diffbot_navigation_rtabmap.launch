@@ -17,8 +17,6 @@
 
   <!-- Arguments -->
   <arg name="model" default="$(env TURTLEBOT3_MODEL)" doc="model type [ohbot02]"/>
-  <arg name="open_rviz" default="true"/>
-  <arg name="rtabmap_viz" default="true"/>
   <arg name="move_forward_only" default="false"/>
 
   <arg name="stereo"                    default="false"/>
@@ -50,7 +48,7 @@
 
       <!-- inputs -->
       <remap from="scan"            to="/diffbot/scan"/>
-      <remap from="odom"            to="/diffbot/mobile_base_controller/odom"/>
+      <remap from="odom"            to="/diffbot/odom_combined"/>
       <remap from="rgb/image"       to="/camera/color/image_raw"/>
       <remap from="depth/image"       to="/camera/aligned_depth_to_color/image_raw"/>
       <remap from="rgb/camera_info"   to="/camera/color/camera_info"/>

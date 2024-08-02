@@ -414,7 +414,7 @@
       <remap from="imu"                    to="$(arg imu_topic)"/>
 
       <!-- localization mode -->
-      <param     if="$(arg localization)" name="Mem/IncrementalMemory" type="string" value="false"/>
+      <param     if="$(arg localization)" name="Mem/IncrementalMemory" type="string" value="true"/>
       <param unless="$(arg localization)" name="Mem/IncrementalMemory" type="string" value="true"/>
       <param name="Mem/InitWMWithAllNodes" type="string" value="$(arg localization)"/>
     </node>

@@ -12,6 +12,9 @@
     <!-- This will create the DiffBot hardware interface and instantiate a new controller manager with it -->
     <node name="diffbot_base" pkg="diffbot_base" type="diffbot_base" ns="diffbot" output="screen"/>
 
+    <node name="base_controller_node" pkg="diffbot_base" type="base_controller_node" ns="diffbot" output="screen"/>
+    <node name="motor_driver" pkg="lx98n_driver" type="motor_driver.py" ns="diffbot" output="screen"/>
+
     <!-- Load controller config to the parameter server -->
     <rosparam command="load" 
               file="$(find diffbot_control)/config/diffbot_control.yaml"/>
