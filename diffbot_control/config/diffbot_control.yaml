@@ -22,7 +22,7 @@ diffbot:
 
   mobile_base_controller:
     type: diff_drive_controller/DiffDriveController
-    enable_odom_tf: true
+    enable_odom_tf: false
     publish_rate: 50
 
     left_wheel: 'front_left_wheel_joint'
@@ -32,7 +32,7 @@ diffbot:
     # diff_drive_controller will attempt to read either one or both from the
     # URDF if not specified as a parameter
     wheel_separation : 0.280
-    wheel_radius : 0.065
+    wheel_radius : 0.0619
 
     # Odometry covariances for the encoder output of the robot. These values should
     # be tuned to your robot's sample odometry data, but these values are a good place

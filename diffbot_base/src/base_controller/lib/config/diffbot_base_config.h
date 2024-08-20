@@ -5,7 +5,7 @@
 #define ENCODER_LEFT_H2 11
 // Encoder resolution used for initialization 
 // will be read from parameter server
-#define ENCODER_RESOLUTION 5500
+#define ENCODER_RESOLUTION 5120.88
 
 #define ENCODER_RIGHT_H1 4
 #define ENCODER_RIGHT_H2 3
