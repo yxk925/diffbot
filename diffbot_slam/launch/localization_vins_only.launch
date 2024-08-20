@@ -9,7 +9,7 @@
 -->
   
   <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se" clear_params="true">
-    <rosparam command="load" file="$(find diffbot_slam)/config/localization_vins.yaml" />
+    <rosparam command="load" file="$(find diffbot_slam)/config/localization_vins_only.yaml" />
 
     <remap from="odometry/filtered" to="/diffbot/odom_combined"/>
 
