@@ -25,7 +25,7 @@
           -configuration_basename $(arg configuration_basename)"
       output="screen">
     <remap from="imu" to="imu/data" />
-    <remap from="odom" to="diffbot/mobile_base_controller/odom" />
+    <remap from="odom" to="/diffbot/odom_combined" />
     <remap from="scan" to="$(arg scan_topic)"/>
   </node>
 

@@ -25,3 +25,6 @@ global_costmap:
   # Whether or not to use a rolling window version of the costmap.
   # If the static_map parameter is set to true, this parameter must be set to false.
   rolling_window: false
+  
+  # The resolution of the map in meters/cell.
+  resolution: 0.03

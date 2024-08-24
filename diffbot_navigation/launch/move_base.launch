@@ -8,6 +8,7 @@
 
   <!-- move_base -->
   <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+    <rosparam file="$(find diffbot_navigation)/config/global_planner_params.yaml" command="load" />
     <!-- base_local_planner parameter is set in the loaded parameter file depending on the local_planner argument -->
     <!--param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" /-->
     <rosparam file="$(find diffbot_navigation)/config/$(arg local_planner)_local_planner_params.yaml" command="load" />

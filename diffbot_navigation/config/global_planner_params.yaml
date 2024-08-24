@@ -1,0 +1,4 @@
+GlobalPlanner::
+  visualize potential: true
+  cost_factor: 0.55
+  neutral_cost: 66
