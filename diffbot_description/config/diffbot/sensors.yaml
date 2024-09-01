@@ -18,8 +18,8 @@ imu:
   radius: 0.015     # Wheel radius in m
   length: 0.005      # Wheel length in m, considering is as a cylinder
   size:
-    x: 0.001
-    y: 0.001
+    x: 0.01
+    y: 0.02
     z: 0.001
   #type: 'mpu' # choose one camera type [mpu, bosch]
   dx: 0.0
