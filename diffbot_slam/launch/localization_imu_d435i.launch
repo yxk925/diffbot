@@ -1,0 +1,17 @@
+<launch>
+  <!--
+  <node name="world2odom" pkg="tf" type="static_transform_publisher" 
+        args="-0.085 0 -0.192 1.5707963 0 0 world odom 30" />
+ 
+  <node name="world2odom" pkg="tf" type="static_transform_publisher" 
+        args="0 0 0 1.5707963 0 0 world odom 30" />
+-->
+  <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se" clear_params="true">
+    <rosparam command="load" file="$(find diffbot_slam)/config/localization_imu_d435i.yaml" />
+
+    <remap from="odometry/filtered" to="/diffbot/odom_combined"/>
+
+
+  </node>
+
+</launch>
