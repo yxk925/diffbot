@@ -23,8 +23,8 @@
   <node name="cartographer_node" pkg="cartographer_ros" type="cartographer_node" 
     args="-configuration_directory $(find diffbot_slam)/config
           -configuration_basename $(arg configuration_basename)"
-      output="screen">
-    <remap from="imu" to="imu/data" />
+      output="screen">  
+    <remap from="imu" to="/rtimulib_node/imu" />
     <remap from="odom" to="/diffbot/odom_combined" />
     <remap from="scan" to="$(arg scan_topic)"/>
   </node>
@@ -39,6 +39,7 @@
     <arg name="local_planner" value="$(arg local_planner)" />
     <arg name="move_forward_only" value="$(arg move_forward_only)"/>
     <arg name="cmd_vel_topic" value="/diffbot/mobile_base_controller/cmd_vel" />
+    <remap from="/imu/data" to="/rtimulib_node/imu" />
   </include>
 
 </launch>
