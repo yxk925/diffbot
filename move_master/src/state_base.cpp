@@ -1,9 +1,12 @@
 #include "move_master/diffbot_state.h"
+#include "move_master/diffbot_state_machine.h"
+
+#include "ros/console.h"
 
 namespace move_master {
 
 
-DiffbotStateBase::DiffbotStateBase(DiffbotState::StateEnum state, std::shared_ptr<DiffbotStateMachinInterface> machine)
+DiffbotStateBase::DiffbotStateBase(DiffbotState::StateEnum state, std::shared_ptr<DiffbotStateMachineInterface> machine)
   : state_(state),
     machine_(machine)
 {
@@ -26,6 +29,25 @@ DiffbotState::StateEnum DiffbotStateBase::DetermineNextState(uint cmd)
 DiffbotState::StateEnum DiffbotStateBase::getState()
 {
   return state_;
+}
+
+void DiffbotStateBase::transition(DiffbotState::StateEnum next_state, const diffbot_msgs::MoveCmd& for_cmd)
+{
+  if (!machine_) {
+    ROS_ERROR_NAMED("DiffbotState", "machine is NULL");
+    return;
+  }
+
+  machine_->requestTransition(next_state, for_cmd);
+}
+
+void DiffbotStateBase::processCmd(const diffbot_msgs::MoveCmd& cmd)
+{
+  ROS_INFO_NAMED("DiffbotState", "processCmd %d:%s", cmd.cmd, cmd.param.c_str());
+  DiffbotState::StateEnum next_state = DetermineNextState(cmd.cmd);
+  if (next_state != DiffbotState::kNone) {
+    transition(next_state, cmd);
+  }
 }
 
 } // namespace move_master

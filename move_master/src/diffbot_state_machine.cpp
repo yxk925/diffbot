@@ -10,7 +10,7 @@ DiffbotStateMachine::DiffbotStateMachine()
   enterState(DiffbotState::kIdle);
 }
 
-// implement DiffbotStateMachinInterface
+// implement DiffbotStateMachineInterface
 void DiffbotStateMachine::requestTransition(DiffbotState::StateEnum next_state,
   const diffbot_msgs::MoveCmd& for_cmd)
 {
@@ -50,7 +50,7 @@ void DiffbotStateMachine::enterState(DiffbotState::StateEnum state)
   if (cur_state_) {
     if (cur_state_->getState() == state)
     {
-      // Do nothing
+      // Already in the state, do nothing
       return;
     }
 

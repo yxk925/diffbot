@@ -4,7 +4,7 @@
 
 namespace move_master {
 
-IdleState::IdleState(std::shared_ptr<DiffbotStateMachinInterface> machine)
+IdleState::IdleState(std::shared_ptr<DiffbotStateMachineInterface> machine)
   : DiffbotStateBase(DiffbotState::kIdle, machine)
 {
   addTransition(diffbot_msgs::MoveCmd::kForward, DiffbotState::kSimpleMoving);
@@ -26,6 +26,7 @@ void IdleState::leave()
 void IdleState::processCmd(const diffbot_msgs::MoveCmd& cmd)
 {
   ROS_INFO_NAMED("IdleState", "processCmd %d:%s", cmd.cmd, cmd.param.c_str());
+  DiffbotStateBase::processCmd(cmd);
 }
 
 } // namespace move_master

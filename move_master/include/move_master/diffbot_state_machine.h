@@ -1,8 +1,10 @@
+#pragma once
+
 #include "move_master/diffbot_state.h"
 
 namespace move_master {
 
-class DiffbotStateMachinInterface : public std::enable_shared_from_this<DiffbotStateMachinInterface>
+class DiffbotStateMachineInterface : public std::enable_shared_from_this<DiffbotStateMachineInterface>
 {
   public:
     virtual void requestTransition(DiffbotState::StateEnum next_state,
@@ -10,16 +12,16 @@ class DiffbotStateMachinInterface : public std::enable_shared_from_this<DiffbotS
 };
 
 class DiffbotStateMachine :
-  public DiffbotStateMachinInterface
+  public DiffbotStateMachineInterface
   
 {
 public:
   DiffbotStateMachine();
   void Init();
 protected:
-  // implement DiffbotStateMachinInterface
+  // implement DiffbotStateMachineInterface
   virtual void requestTransition(DiffbotState::StateEnum next_state,
-    const diffbot_msgs::MoveCmd& for_cmd) = 0;
+    const diffbot_msgs::MoveCmd& for_cmd) override;
   void processCmd(const diffbot_msgs::MoveCmd& cmd);
 private:
   DiffbotState::StateEnum getCurState();

@@ -140,6 +140,7 @@ add_executable(${PROJECT_NAME}_node
   src/move_master_node.cpp
   src/state_base.cpp
   src/idle_state.cpp
+  src/simplemving_state.cpp
   src/diffbot_state_machine.cpp)
 
 ## Rename C++ executable without prefix
