@@ -12,17 +12,29 @@ SimpleMovingState::SimpleMovingState(std::shared_ptr<DiffbotStateMachineInterfac
 
 void SimpleMovingState::enter()
 {
-  ROS_INFO_NAMED("SimpleMovingState", "enter Idle state");
+  ROS_INFO_NAMED("SimpleMovingState", "enter SimpleMoving state");
 }
 
 void SimpleMovingState::leave()
 {
-  ROS_INFO_NAMED("SimpleMovingState", "leave Idle state");
+  ROS_INFO_NAMED("SimpleMovingState", "leave SimpleMoving state");
 }
 void SimpleMovingState::processCmd(const diffbot_msgs::MoveCmd& cmd)
 {
   ROS_INFO_NAMED("SimpleMovingState", "processCmd %d:%s", cmd.cmd, cmd.param.c_str());
-  DiffbotStateBase::processCmd(cmd);
+  try {
+    float distance = 0.0f;
+    switch(cmd.cmd) {
+      case diffbot_msgs::MoveCmd::kForward:
+        distance = std::stof(cmd.param);
+        move_agent_.moveForward(distance);
+        break;
+      default:
+        DiffbotStateBase::processCmd(cmd);
+    }
+  } catch(std::exception& e) {
+    ROS_ERROR_NAMED("SimpleMovingState", "[processCmd]excpation:%s", e.what());
+  }
 }
 
 } // namespace move_master

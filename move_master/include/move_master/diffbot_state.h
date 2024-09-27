@@ -1,6 +1,7 @@
 #pragma once
 
 #include "diffbot_msgs/MoveCmd.h"
+#include "move_master/move_action_agent.h"
 
 #include <map>
 #include <memory>
@@ -52,6 +53,8 @@ class SimpleMovingState : public DiffbotStateBase {
     virtual void enter();
     virtual void leave();
     virtual void processCmd(const diffbot_msgs::MoveCmd& cmd);
+
+    MoveActionAgent move_agent_;
 };
 
 } // namespace move_master

@@ -140,8 +140,9 @@ add_executable(${PROJECT_NAME}_node
   src/move_master_node.cpp
   src/state_base.cpp
   src/idle_state.cpp
-  src/simplemving_state.cpp
-  src/diffbot_state_machine.cpp)
+  src/simplemoving_state.cpp
+  src/diffbot_state_machine.cpp
+  src/move_action_agent.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
