@@ -24,10 +24,23 @@ void SimpleMovingState::processCmd(const diffbot_msgs::MoveCmd::ConstPtr& cmd)
   ROS_INFO_NAMED("SimpleMovingState", "processCmd %d:%s", cmd->cmd, cmd->param.c_str());
   try {
     float distance = 0.0f;
+    float angle = 0.0f;
     switch(cmd->cmd) {
       case diffbot_msgs::MoveCmd::kForward:
         distance = std::stof(cmd->param);
         move_agent_.moveForward(distance);
+        break;
+      case diffbot_msgs::MoveCmd::kBackward:
+        distance = std::stof(cmd->param);
+        move_agent_.moveBackward(distance);
+        break;
+      case diffbot_msgs::MoveCmd::kTurnLeft:
+        angle = std::stof(cmd->param);
+        move_agent_.turnLeft(angle);
+        break;
+      case diffbot_msgs::MoveCmd::kTurnRight:
+        angle = std::stof(cmd->param);
+        move_agent_.turnRight(angle);
         break;
       default:
         DiffbotStateBase::processCmd(cmd);

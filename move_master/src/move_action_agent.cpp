@@ -20,24 +20,41 @@ bool MoveActionAgent::moveForward(float distance)
 
 bool MoveActionAgent::moveBackward(float distance)
 {
-  return false;
+  ROS_INFO("[MoveActionAgent]moveBackward, distance:%f", distance);
+  geometry_msgs::Pose pose;
+  pose.position.x = -distance;
+  pose.orientation.w = 1.0;
+
+  return move(pose);
 }
 
 bool MoveActionAgent::turnLeft(float angle)
 {
-  return false;
+  ROS_INFO("[MoveActionAgent]turnLeft, angle:%f", angle);
+  geometry_msgs::Pose pose;
+  pose.orientation.z = angle;
+
+  pose.orientation.w = 1.0;
+
+  return move(pose);
 }
 
 bool MoveActionAgent::turnRight(float angle)
 {
-  return false;
+  ROS_INFO("[MoveActionAgent]turnRight, angle:%f", angle);
+  geometry_msgs::Pose pose;
+  pose.orientation.z = -angle;
+
+  pose.orientation.w = 1.0;
+
+  return move(pose);
 }
 
 bool MoveActionAgent::move(const geometry_msgs::Pose& pose)
 {
   MoveBaseClient ac("move_base", true);
   const int32_t kWaitNSec = 300*1000;
-  if (!ac.waitForServer(ros::Duration(330, kWaitNSec))) {
+  if (!ac.waitForServer(ros::Duration(100, kWaitNSec))) {
     ROS_ERROR_NAMED("MoveActionAgent", "Action server NOT connected!");
     return false;
   }
