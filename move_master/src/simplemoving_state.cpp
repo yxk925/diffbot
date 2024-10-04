@@ -19,14 +19,14 @@ void SimpleMovingState::leave()
 {
   ROS_INFO_NAMED("SimpleMovingState", "leave SimpleMoving state");
 }
-void SimpleMovingState::processCmd(const diffbot_msgs::MoveCmd& cmd)
+void SimpleMovingState::processCmd(const diffbot_msgs::MoveCmd::ConstPtr& cmd)
 {
-  ROS_INFO_NAMED("SimpleMovingState", "processCmd %d:%s", cmd.cmd, cmd.param.c_str());
+  ROS_INFO_NAMED("SimpleMovingState", "processCmd %d:%s", cmd->cmd, cmd->param.c_str());
   try {
     float distance = 0.0f;
-    switch(cmd.cmd) {
+    switch(cmd->cmd) {
       case diffbot_msgs::MoveCmd::kForward:
-        distance = std::stof(cmd.param);
+        distance = std::stof(cmd->param);
         move_agent_.moveForward(distance);
         break;
       default:

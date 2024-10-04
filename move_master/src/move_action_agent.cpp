@@ -1,4 +1,5 @@
 #include "move_master/move_action_agent.h"
+#include "ros/console.h"
 
 namespace move_master {
 
@@ -9,6 +10,7 @@ MoveActionAgent::MoveActionAgent()
 
 bool MoveActionAgent::moveForward(float distance)
 {
+  ROS_INFO("[MoveActionAgent]moveForward, distance:%f", distance);
   geometry_msgs::Pose pose;
   pose.position.x = distance;
   pose.orientation.w = 1.0;
@@ -35,7 +37,7 @@ bool MoveActionAgent::move(const geometry_msgs::Pose& pose)
 {
   MoveBaseClient ac("move_base", true);
   const int32_t kWaitNSec = 300*1000;
-  if (!ac.waitForServer(ros::Duration(0, kWaitNSec))) {
+  if (!ac.waitForServer(ros::Duration(330, kWaitNSec))) {
     ROS_ERROR_NAMED("MoveActionAgent", "Action server NOT connected!");
     return false;
   }
@@ -50,12 +52,7 @@ bool MoveActionAgent::move(const geometry_msgs::Pose& pose)
   ROS_INFO_NAMED("MoveActionAgent", "Sending goal");
   ac.sendGoal(goal,
               boost::bind(&MoveActionAgent::doneCb, this, _1, _2),
-              MoveBaseClient::SimpleActiveCallback(),  switch(cmd.cmd) {
-      case diffbot_msgs::MoveCmd::kForward:
-        float distance = std::stof(cmd.param);
-        move_agent_.forward(distance);
-        break;
-      default:
+              MoveBaseClient::SimpleActiveCallback(), 
               MoveBaseClient::SimpleFeedbackCallback());
 
   return true;

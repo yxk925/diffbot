@@ -8,7 +8,8 @@ class DiffbotStateMachineInterface : public std::enable_shared_from_this<Diffbot
 {
   public:
     virtual void requestTransition(DiffbotState::StateEnum next_state,
-      const diffbot_msgs::MoveCmd& for_cmd) = 0;
+      const diffbot_msgs::MoveCmd::ConstPtr& for_cmd) = 0;
+    virtual void processCmd(const diffbot_msgs::MoveCmd::ConstPtr& cmd) = 0;
 };
 
 class DiffbotStateMachine :
@@ -17,12 +18,12 @@ class DiffbotStateMachine :
 {
 public:
   DiffbotStateMachine();
-  void Init();
-protected:
+  void init();
+
   // implement DiffbotStateMachineInterface
-  virtual void requestTransition(DiffbotState::StateEnum next_state,
-    const diffbot_msgs::MoveCmd& for_cmd) override;
-  void processCmd(const diffbot_msgs::MoveCmd& cmd);
+  void requestTransition(DiffbotState::StateEnum next_state,
+    const diffbot_msgs::MoveCmd::ConstPtr& for_cmd) override;
+  void processCmd(const diffbot_msgs::MoveCmd::ConstPtr& cmd) override;
 private:
   DiffbotState::StateEnum getCurState();
   std::shared_ptr<DiffbotStateBase> createState(DiffbotState::StateEnum state);
