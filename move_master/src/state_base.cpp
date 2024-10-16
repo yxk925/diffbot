@@ -43,7 +43,7 @@ void DiffbotStateBase::transition(DiffbotState::StateEnum next_state, const diff
 
 void DiffbotStateBase::processCmd(const diffbot_msgs::MoveCmd::ConstPtr& cmd)
 {
-  ROS_INFO_NAMED("DiffbotState", "processCmd %d:%s", cmd->cmd, cmd->param.c_str());
+  ROS_INFO("[DiffbotStateBase][%d]processCmd %d:%s", state_, cmd->cmd, cmd->param.c_str());
   DiffbotState::StateEnum next_state = DetermineNextState(cmd->cmd);
   if (next_state != DiffbotState::kNone) {
     transition(next_state, cmd);

@@ -12,17 +12,27 @@ typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseCl
 class MoveActionAgent
 {
   public:
+    enum State{
+      kStop,
+      kForwardMoving,
+      kBackwardMoving,
+      kLeftTurning,
+      kRightTurning
+    };
     MoveActionAgent();
     bool moveForward(float distance);
     bool moveBackward(float distance);
     bool turnLeft(float angle);
     bool turnRight(float angle);
     bool move(const geometry_msgs::Pose& pose);
+    bool stop();
+    State getState();
   private:
     bool checkAndConnect();
     void doneCb(const actionlib::SimpleClientGoalState& state,
                 // const ResultConstPtr& result);
                 const move_base_msgs::MoveBaseResultConstPtr& result);
+    State state_;
 };
 
 } // namespace move_master

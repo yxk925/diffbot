@@ -25,7 +25,7 @@ void IdleState::leave()
 }
 void IdleState::processCmd(const diffbot_msgs::MoveCmd::ConstPtr& cmd)
 {
-  ROS_INFO_NAMED("IdleState", "processCmd %d:%s", cmd->cmd, cmd->param.c_str());
+  ROS_INFO("[IdleState]processCmd %d:%s", cmd->cmd, cmd->param.c_str());
   DiffbotStateBase::processCmd(cmd);
 }
 

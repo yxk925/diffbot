@@ -8,6 +8,11 @@ MoveActionAgent::MoveActionAgent()
 
 }
 
+MoveActionAgent::State MoveActionAgent::getState()
+{
+  return state_;
+}
+
 bool MoveActionAgent::moveForward(float distance)
 {
   ROS_INFO("[MoveActionAgent]moveForward, distance:%f", distance);
@@ -15,7 +20,14 @@ bool MoveActionAgent::moveForward(float distance)
   pose.position.x = distance;
   pose.orientation.w = 1.0;
 
-  return move(pose);
+  if (!move(pose)) {
+    ROS_ERROR("[MoveActionAgent][moveForward]move FAILED");
+    return false;
+  }
+
+  state_ = kForwardMoving;
+
+  return true;
 }
 
 bool MoveActionAgent::moveBackward(float distance)
@@ -25,7 +37,14 @@ bool MoveActionAgent::moveBackward(float distance)
   pose.position.x = -distance;
   pose.orientation.w = 1.0;
 
-  return move(pose);
+  if (!move(pose)) {
+    ROS_ERROR("[MoveActionAgent][moveBackward]move FAILED");
+    return false;
+  }
+
+  state_ = kBackwardMoving;
+
+  return true;
 }
 
 bool MoveActionAgent::turnLeft(float angle)
@@ -36,7 +55,14 @@ bool MoveActionAgent::turnLeft(float angle)
 
   pose.orientation.w = 1.0;
 
-  return move(pose);
+  if (!move(pose)) {
+    ROS_ERROR("[MoveActionAgent][turnLeft]move FAILED");
+    return false;
+  }
+
+  state_ = kLeftTurning;
+
+  return true;
 }
 
 bool MoveActionAgent::turnRight(float angle)
@@ -47,7 +73,14 @@ bool MoveActionAgent::turnRight(float angle)
 
   pose.orientation.w = 1.0;
 
-  return move(pose);
+  if (!move(pose)) {
+    ROS_ERROR("[MoveActionAgent][turnRight]move FAILED");
+    return false;
+  }
+
+  state_ = kRightTurning;
+
+  return true;
 }
 
 bool MoveActionAgent::move(const geometry_msgs::Pose& pose)
@@ -55,18 +88,18 @@ bool MoveActionAgent::move(const geometry_msgs::Pose& pose)
   MoveBaseClient ac("move_base", true);
   const int32_t kWaitNSec = 300*1000;
   if (!ac.waitForServer(ros::Duration(100, kWaitNSec))) {
-    ROS_ERROR_NAMED("MoveActionAgent", "Action server NOT connected!");
+    ROS_ERROR("[MoveActionAgent][move]Action server NOT connected!");
     return false;
   }
   move_base_msgs::MoveBaseGoal goal;
   
-  //we'll send a goal to the robot to move 1 meter forward
+  //we'll send a goal to the robot to move, pose related by base_link
   goal.target_pose.header.frame_id = "base_link";
   goal.target_pose.header.stamp = ros::Time::now();
   
   goal.target_pose.pose = pose;
   
-  ROS_INFO_NAMED("MoveActionAgent", "Sending goal");
+  ROS_INFO("[MoveActionAgent][move]Sending goal");
   ac.sendGoal(goal,
               boost::bind(&MoveActionAgent::doneCb, this, _1, _2),
               MoveBaseClient::SimpleActiveCallback(), 
@@ -75,10 +108,24 @@ bool MoveActionAgent::move(const geometry_msgs::Pose& pose)
   return true;
 }
 
+bool MoveActionAgent::stop()
+{
+  MoveBaseClient ac("move_base", true);
+  const int32_t kWaitNSec = 300*1000;
+  if (!ac.waitForServer(ros::Duration(100, kWaitNSec))) {
+    ROS_ERROR_NAMED("MoveActionAgent", "Action server NOT connected!");
+    return false;
+  }
+  ac.cancelAllGoals();
+
+  return true;
+}
+
 void MoveActionAgent::doneCb(const actionlib::SimpleClientGoalState& state,
                 const move_base_msgs::MoveBaseResultConstPtr& result)
 {
   ROS_INFO_NAMED("MoveActionAgent", "doneCb, Finished in state [%s]", state.toString().c_str());
+  state_ = kStop;
   // ROS_INFO_NAMED("MoveActionAgent", "doneCb, Answer: %i", result->sequence.back());
 }
 
