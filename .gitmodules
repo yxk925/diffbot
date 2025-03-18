@@ -7,3 +7,6 @@
 [submodule "tello-gesture-control"]
 	path = tello-gesture-control
 	url = git@github.com:yxk925/tello-gesture-control.git
+[submodule "realtime-reid"]
+	path = realtime-reid
+	url = git@github.com:yxk925/realtime-reid.git
