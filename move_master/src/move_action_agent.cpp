@@ -85,9 +85,10 @@ bool MoveActionAgent::turnRight(float angle)
 
 bool MoveActionAgent::move(const geometry_msgs::Pose& pose)
 {
+  ROS_INFO("[MoveActionAgent][move]waiting server ...");
   MoveBaseClient ac("move_base", true);
-  const int32_t kWaitNSec = 300*1000;
-  if (!ac.waitForServer(ros::Duration(100, kWaitNSec))) {
+  // wait for 1 sec
+  if (!ac.waitForServer(ros::Duration(1.0))) {
     ROS_ERROR("[MoveActionAgent][move]Action server NOT connected!");
     return false;
   }

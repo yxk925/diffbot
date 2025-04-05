@@ -24,7 +24,7 @@ int main(int agc, char** agv)
 
   g_state_machine->init();
 
-  ros::Subscriber sub = nh.subscribe("move_master/cmd", 1000, cmdCallback);
+  ros::Subscriber sub = nh.subscribe("move_master/cmd", 1, cmdCallback);
 
   while(ros::ok())
   {

@@ -49,9 +49,11 @@ void SimpleMovingState::processCmd(const diffbot_msgs::MoveCmd::ConstPtr& cmd)
       case diffbot_msgs::MoveCmd::kStop:
         move_agent_.stop();
         break;
+      default:
+        DiffbotStateBase::processCmd(cmd);
     }
     
-    DiffbotStateBase::processCmd(cmd);
+    
   } catch(std::exception& e) {
     ROS_ERROR_NAMED("SimpleMovingState", "[processCmd]excpation:%s", e.what());
   }
