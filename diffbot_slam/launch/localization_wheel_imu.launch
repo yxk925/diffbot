@@ -1,7 +1,7 @@
 <launch>
  
   <node name="imu_link2imu" pkg="tf" type="static_transform_publisher" 
-        args="0 0 0 0 0 0 imu_link imu 200" />
+        args="0 0 0  0  0 3.1415926 imu_link imu 30" />
 
   
   <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se" clear_params="true">

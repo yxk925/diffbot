@@ -2,6 +2,7 @@
   <node name="imu_filter" pkg="imu_filter_madgwick" type="imu_filter_node">
     <param name="use_mag" type="bool" value="false"/>
     <param name="publish_tf" type="bool" value="false"/>
+    <param name="fixed_frame" type="string" value="fixed_imu"/>
     <param name="world_frame" type="string" value="ned"/>
     <remap from="/imu/data_raw" to="/rtimulib_node/imu"/>
   </node>
