@@ -1,0 +1,18 @@
+<launch>
+  <node name="imu_filter" pkg="imu_filter_madgwick" type="imu_filter_node">
+    <param name="use_mag" type="bool" value="false"/>
+    <param name="publish_tf" type="bool" value="false"/>
+    <param name="world_frame" type="string" value="ned"/>
+    <remap from="/imu/data_raw" to="/rtimulib_node/imu"/>
+  </node>
+
+  <!--
+  <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se" clear_params="true">
+    <rosparam command="load" file="$(find diffbot_slam)/config/localization_vins.yaml" />
+
+    <remap from="odometry/filtered" to="/diffbot/odom_combined"/>
+
+
+  </node>
+  -->
+</launch>
