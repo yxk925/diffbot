@@ -1,0 +1,4 @@
+<launch>
+    <!-- Launch visualization in rviz -->
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find diffbot_slam)/rviz/localization.rviz" required="true" />
+</launch>
