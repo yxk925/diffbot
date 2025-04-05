@@ -33,6 +33,7 @@ DiffbotState::StateEnum DiffbotStateBase::getState()
 
 void DiffbotStateBase::transition(DiffbotState::StateEnum next_state, const diffbot_msgs::MoveCmd::ConstPtr& for_cmd)
 {
+  ROS_INFO("[DiffbotStateBase][%d]transition to %d", state_, next_state);
   if (!machine_) {
     ROS_ERROR_NAMED("DiffbotState", "machine is NULL");
     return;
@@ -47,6 +48,8 @@ void DiffbotStateBase::processCmd(const diffbot_msgs::MoveCmd::ConstPtr& cmd)
   DiffbotState::StateEnum next_state = DetermineNextState(cmd->cmd);
   if (next_state != DiffbotState::kNone) {
     transition(next_state, cmd);
+  } else {
+    ROS_INFO("[DiffbotStateBase][%d][processCmd]None state for this cmd", state_);
   }
 }
 

@@ -1,0 +1,9 @@
+<launch>
+  <arg name="rvizconfig" default="$(find diffbot_navigation)/rviz/diffbot_navigation.rviz" />
+ 
+
+  <!-- Launch visualization in rviz -->
+    <node pkg="rviz" type="rviz" name="rviz" required="true"
+          args="-d $(arg rvizconfig)"/>
+          
+</launch>
