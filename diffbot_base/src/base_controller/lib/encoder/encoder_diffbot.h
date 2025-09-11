@@ -40,7 +40,7 @@ namespace diffbot
     {
     public:
         // Teensy Encoder class that is capable of reading rising and falling edges of two Hall effect signals.
-        ::Encoder encoder;
+        wiringpi_encoder::Encoder encoder;
 
         /** \brief Construct a diffbot::Encoder providing access to quadrature encoder ticks and angular joint velocity.
          * 
