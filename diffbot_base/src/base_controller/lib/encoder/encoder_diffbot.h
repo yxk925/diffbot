@@ -5,8 +5,7 @@
 #ifndef DIFFBOT_ENCODER_H
 #define DIFFBOT_ENCODER_H
 
-#include <wiringpi-encoder/encoder.h>
-
+#include "encoder_roscompanion.h"
 #include <ros/ros.h>
 
 
@@ -40,16 +39,15 @@ namespace diffbot
     {
     public:
         // Teensy Encoder class that is capable of reading rising and falling edges of two Hall effect signals.
-        wiringpi_encoder::Encoder encoder;
+        roscompanion::EncoderAdpter encoder;
 
         /** \brief Construct a diffbot::Encoder providing access to quadrature encoder ticks and angular joint velocity.
          * 
          * \param nh reference to the main ros::NodeHandle to compute the velocity from time and ticks or angle (s = v * t)
-         * \param pin1 Pin of the first Hall effect sensor
-         * \param pin2 Pin of the second Hall effect sensor
+         * \param channel  the encoder channel of RosCompaianon
          * \param encoder_resolution number of tick counts for one full revolution of the wheel (not the motor shaft). Keep track of gear reduction ratio.
          */
-        Encoder(ros::NodeHandle& nh, uint8_t pin1, uint8_t pin2, int encoder_resolution);
+        Encoder(ros::NodeHandle& nh, uint8_t channel, int encoder_resolution);
 
         /** \brief get revolutions per minute
          *

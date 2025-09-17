@@ -1,9 +1,9 @@
 #include "encoder_diffbot.h"
 
 
-diffbot::Encoder::Encoder(ros::NodeHandle& nh, uint8_t pin1, uint8_t pin2, int encoder_resolution)
+diffbot::Encoder::Encoder(ros::NodeHandle& nh, uint8_t channel, int encoder_resolution)
   : nh_(nh)
-  , encoder(pin1, pin2)
+  , encoder(nh, channel)
   , encoder_resolution_(encoder_resolution)
   , prev_update_time_(ros::Time::now())
   , last_update_time_(ros::Time::now())

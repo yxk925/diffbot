@@ -171,7 +171,7 @@ include_directories(
 )
 
 add_executable(base_controller_node
-  src/base_controller/lib/wiringpi-encoder/encoder.cpp
+  src/base_controller/lib/encoder/encoder_roscompanion.cpp
   src/base_controller/lib/encoder/encoder_diffbot.cpp
   src/base_controller/lib/pid/diffbot_pid.cpp
   src/base_controller/lib/motor_controllers/lx98n/lx98n_controller.cpp
