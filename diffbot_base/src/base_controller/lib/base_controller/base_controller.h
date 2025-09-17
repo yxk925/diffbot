@@ -387,8 +387,8 @@ template <typename TMotorController, typename TMotorDriver>
 diffbot::BaseController<TMotorController, TMotorDriver>
     ::BaseController(ros::NodeHandle &nh, TMotorController* motor_controller_left, TMotorController* motor_controller_right)
     : nh_(nh)
-    , encoder_left_(nh, ENCODER_LEFT_H1, ENCODER_LEFT_H2, ENCODER_RESOLUTION)
-    , encoder_right_(nh, ENCODER_RIGHT_H1, ENCODER_RIGHT_H2, ENCODER_RESOLUTION)
+    , encoder_left_(nh, ENCODER_CHANNEL_LEFT, ENCODER_RESOLUTION)
+    , encoder_right_(nh, ENCODER_CHANNEL_RIGHT, ENCODER_RESOLUTION)
    
     , last_update_time_(ros::Time::now())
     , update_rate_(UPDATE_RATE_IMU, UPDATE_RATE_CONTROL, UPDATE_RATE_DEBUG)
