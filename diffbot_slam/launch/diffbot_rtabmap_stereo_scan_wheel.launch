@@ -1,0 +1,43 @@
+<launch>
+    <arg name="localization"            default="false"/>
+    <arg name="move_forward_only" default="false"/>
+    <arg name="local_planner" default="dwa" doc="Local planner can be either dwa, base, teb or pose"/>
+
+    <param name="/rtabmap/rtabmap/Reg/Strategy" type="string" value="0"/>           <!-- 0=Visual, 1=ICP, 2=Visual+ICP -->
+    <param name="/rtabmap/rtabmap/Odom/Strategy" type="string" value="1"/>
+    <param name="/rtabmap/rtabmap/Icp/CorrespondenceRatio" type="string" value="0.3"/>
+    <param name="/rtabmap/rtabmap/Icp/MaxCorrespondenceDistance" type="string" value="0.1"/>
+    <param name="/rtabmap/rtabmap/Icp/Iterations" type="string" value="50"/>
+
+
+    <include file="$(find diffbot_slam)/launch/rtabmap_ex.launch">
+        <arg     if="$(arg localization)" name="args" value="--Optimizer/GravitySigma 0.3"/>
+        <arg unless="$(arg localization)" name="args" value="--Optimizer/GravitySigma 0.3 --delete_db_on_start"/>
+        <arg name="subscribe_scan" value="true" />
+        <arg name="scan_topic" value="/diffbot/scan" />        
+        <arg name="left_image_topic" value="/camera/infra1/image_rect_raw"/>
+        <arg name="right_image_topic" value="/camera/infra2/image_rect_raw"/>
+        <arg name="left_camera_info_topic" value="/camera/infra1/camera_info"/>
+        <arg name="right_camera_info_topic" value="/camera/infra2/camera_info"/>
+        <arg name="stereo" value="true"/>
+        <arg name="approx_sync" value="true"/>
+        <arg name="approx_sync_max_interval" value="0.02"/>
+        <arg name="imu_topic" value="/imu/data"/>
+        <arg name="wait_imu_to_init" value="true"/>
+        <arg name="frame_id" value="base_footprint"/>
+        <arg name="visual_odometry" value="true"/>
+        <arg name="icp_odometry" value="true"/>
+        <arg name="use_odometry" value="true"/>
+        <arg name="odom_topic" value="/diffbot/odom_combined"/>
+        <arg name="visual_odom_topic" value="/diffbot/visual_odom"/>
+        <arg name="vo_frame_id" value="odom"/>
+        <arg name="publish_tf_odom" value="true"/>
+        <arg name="rtabmap_viz" value="false"/>
+        <arg name="rviz" value="false"/>
+        <arg name="localization"  value="$(arg localization)"/>
+
+
+    </include>
+
+
+</launch>

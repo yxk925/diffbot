@@ -1,14 +1,16 @@
 <launch>
-  <node name="imu_filter" pkg="imu_filter_madgwick" type="imu_filter_node">
+  <arg name="number"            default=""/>
+  <node name="imu_filter$(arg number)" pkg="imu_filter_madgwick" type="imu_filter_node">
     <param name="use_mag" type="bool" value="false"/>
     <param name="publish_tf" type="bool" value="false"/>
     <param name="fixed_frame" type="string" value="fixed_imu"/>
     <param name="world_frame" type="string" value="ned"/>
     <remap from="/imu/data_raw" to="/rtimulib_node/imu"/>
+    <remap from="/imu/data" to="/imu/data$(arg number)" />
   </node>
 
-  <node name="imu_link2imu" pkg="tf" type="static_transform_publisher" 
-        args="0 0 0  0  0 3.1415926 imu_link imu 30" />
+  <!--node name="imu_link2imu$(arg number)" pkg="tf" type="static_transform_publisher" 
+        args="0 0 0  0  0 3.1415926 imu_link$(arg number) imu 30" /-->
   <!--
   <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se" clear_params="true">
     <rosparam command="load" file="$(find diffbot_slam)/config/localization_vins.yaml" />

@@ -1,0 +1,14 @@
+<launch>
+ 
+
+  
+  <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se" clear_params="true">
+    <rosparam command="load" file="$(find diffbot_slam)/config/localization_rgbdicp_wheel_2imu.yaml" />
+
+    <remap from="odometry/filtered" to="/diffbot/odom_combined"/>
+    <remap from="cmd_vel" to="/diffbot/mobile_base_controller/cmd_vel"/>
+
+
+  </node>
+  
+</launch>

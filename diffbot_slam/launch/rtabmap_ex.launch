@@ -111,6 +111,7 @@
   <arg name="gen_depth_fill_iterations"  default="1" />
   <arg name="gen_depth_fill_holes_error" default="0.1" />
 
+  <arg name="use_odometry"   default="false"/> <!-- Use odometry topic to initialize rtabmap -->
   <arg name="visual_odometry"          default="true"/>          <!-- Launch rtabmap visual odometry node -->
   <arg name="icp_odometry"             default="false"/>         <!-- Launch rtabmap icp odometry node -->
   <arg name="odom_topic"               default="odom"/>          <!-- Odometry topic name -->
@@ -359,6 +360,7 @@
       <param name="subscribe_scan_cloud" type="bool"   value="$(arg subscribe_scan_cloud)"/>
       <param name="subscribe_scan_descriptor" type="bool" value="$(arg subscribe_scan_descriptor)"/>
       <param name="subscribe_user_data"  type="bool"   value="$(arg subscribe_user_data)"/>
+      <param name="use_odometry" type="bool" value="$(arg use_odometry)"/>
       <param if="$(arg visual_odometry)" name="subscribe_odom_info" type="bool" value="true"/>
       <param if="$(arg icp_odometry)"    name="subscribe_odom_info" type="bool" value="true"/>
       <param name="frame_id"             type="string" value="$(arg frame_id)"/>

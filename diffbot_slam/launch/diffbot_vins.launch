@@ -3,6 +3,12 @@
     <arg name="move_forward_only" default="false"/>
     <arg name="local_planner" default="dwa" doc="Local planner can be either dwa, base, teb or pose"/>
 
+  <node name="map2world" pkg="tf" type="static_transform_publisher" 
+        args="0 0 0 -1.5707963 0 0 map world 200" />
+
+  <node name="body2footprint" pkg="tf" type="static_transform_publisher" 
+        args="0 0 0 1.5707963 -1.5707963 0  body base_footprint 200" />
+        
     <include file="$(find diffbot_slam)/launch/rtabmap_ex.launch">
         <arg     if="$(arg localization)" name="args" value="--Optimizer/GravitySigma 0.3"/>
         <arg unless="$(arg localization)" name="args" value="--Optimizer/GravitySigma 0.3 --delete_db_on_start"/>
