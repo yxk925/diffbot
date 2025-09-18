@@ -5,9 +5,6 @@
 namespace roscompanion
 {
 
-
-ros::NodeHandle nh;
-
 std::string kEncoderTopName = "/encoders_array";
 // 定义全局变量来存储接收到的数据
 std::vector<int32_t> position_data;

@@ -1,0 +1,6 @@
+<!-- https://github.com/ros-controls/ros_controllers/tree/kinetic-devel/diff_drive_controller/test -->
+<launch>
+    <!-- Run the base_controller -->
+    <!-- This will create the base_controller which apdapt encoders from RosCompanion_STM32 -->
+    <node name="base_controller" pkg="diffbot_base" type="base_controller_node" ns="diffbot" output="screen"/>
+</launch>
