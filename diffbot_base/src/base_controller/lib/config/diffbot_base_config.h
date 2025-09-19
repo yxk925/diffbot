@@ -4,7 +4,7 @@
 #define ENCODER_CHANNEL_LEFT 0
 // Encoder resolution used for initialization 
 // will be read from parameter server
-#define ENCODER_RESOLUTION 5120.88
+#define ENCODER_RESOLUTION 2600
 
 #define ENCODER_CHANNEL_RIGHT 1
 

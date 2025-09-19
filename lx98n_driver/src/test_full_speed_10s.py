@@ -17,8 +17,8 @@ def motor_driver_test_basic(PWM_VALUE, sec):
 if __name__ == "__main__":
     print("Starting Motor DRiver Test")
     pwm_value = 100
-    sec = 10
+    sec = 5
     
-    motor_driver_test_basic(pwm_value, 5)
+    motor_driver_test_basic(pwm_value, sec)
     print("Starting Motor DRiver Test...END")
 
