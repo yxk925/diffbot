@@ -18,8 +18,8 @@ include "trajectory_builder.lua"
 options = {
   map_builder = MAP_BUILDER,
   trajectory_builder = TRAJECTORY_BUILDER,
-  map_frame = "map",
-  tracking_frame = "imu_link", -- imu_link, If you are using gazebo, use 'base_footprint' (libgazebo_ros_imu's bug)
+  map_frame = "map", -- "map", Change to 'map_revert' if you want to use rviz's 2D Nav Goal
+  tracking_frame = "imu_link_fixed", -- imu_link, If you are using gazebo, use 'base_footprint' (libgazebo_ros_imu's bug)
   publish_to_tf = true,
   published_frame = "odom",
   odom_frame = "odom",

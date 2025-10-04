@@ -83,8 +83,8 @@ odom0: /diffbot/mobile_base_controller/odom
 # do not provide some of the state variables estimated by the filter. For example, a TwistWithCovarianceStamped message
 # has no pose information, so the first six values would be meaningless in that case. Each vector defaults to all false
 # if unspecified, effectively making this parameter required for each sensor.
-odom0_config: [false,  false,  false,
-               false, false, false,
+odom0_config: [true,  true,  false,
+               false, false, true,
                true, false, false,
                false, false, false,
                false, false, false]
@@ -138,13 +138,17 @@ odom0_twist_rejection_threshold: 1
 #pose0_rejection_threshold: 2  # Note the difference in parameter name
 #pose0_nodelay: false
 
-
+# values is:  x, y, z,
+#             roll, pitch, yaw, 
+#             vx, vy, vz, 
+#             vroll, vpitch, vyaw, 
+#             ax, ay, az
 imu0: /imu/data
 imu0_config: [false, false, false,
               false,  false,  true,
               false, false, false,
               false,  false,  true,
-              true,  false,  false]
+              false,  false,  false]
 imu0_nodelay: false
 imu0_differential: false
 imu0_relative: true

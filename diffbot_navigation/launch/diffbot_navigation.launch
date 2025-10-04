@@ -14,9 +14,6 @@
   <!-- Map server -->
   <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)"/>
 
-  <node name="map2map_revert" pkg="tf" type="static_transform_publisher" 
-        args="0 0 0  0  0 3.1415926 map map_revert 30" />
-
   <!-- AMCL -->
   <include file="$(find diffbot_navigation)/launch/amcl.launch">
     <arg name="model" value="$(arg model)" />

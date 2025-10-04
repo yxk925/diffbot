@@ -9,8 +9,8 @@
   </node>
 
 
-  <!--node name="imu_optical_to_imu" pkg="tf" type="static_transform_publisher" 
-        args="0 0 0 0 -1.5707963 1.5707963 camera_imu_optical_frame imu_link_2 200" /-->
+  <node name="imu_optical_to_imu" pkg="tf" type="static_transform_publisher" 
+        args="0 0 0 0 -1.5707963 1.5707963 camera_imu_optical_frame imu_link_fixed 200" />
 
   <!--
   <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se" clear_params="true">
