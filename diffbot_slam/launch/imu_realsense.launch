@@ -1,5 +1,5 @@
 <launch>
-  <arg name="number"            default=""/>
+  <arg name="number"            default="2"/>
   <node name="imu_filter$(arg number)" pkg="imu_filter_madgwick" type="imu_filter_node">
     <param name="use_mag" type="bool" value="false"/>
     <param name="publish_tf" type="bool" value="false"/>
