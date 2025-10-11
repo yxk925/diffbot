@@ -1,6 +1,7 @@
 <launch>
  
 
+  <include file="$(find diffbot_slam)/launch/imu_rtimulib.launch"/>
   
   <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se" clear_params="true">
     <rosparam command="load" file="$(find diffbot_slam)/config/localization_wheel_imu.yaml" />
