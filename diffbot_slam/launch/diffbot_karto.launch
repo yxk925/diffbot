@@ -6,10 +6,21 @@
        but DiffBot provides this in the diffbot namespace -->
   <arg name="scan_topic"  default="diffbot/scan"/>
 
+  <arg name="move_forward_only" default="false"/>
+  <arg name="local_planner" default="dwa" doc="Local planner can be either dwa, base, teb or pose"/>
+
   <!-- slam_karto -->
   <node pkg="slam_karto" type="slam_karto" name="slam_karto" output="screen">
     <rosparam command="load" file="$(find diffbot_slam)/config/karto_mapper_params.yaml" />
     <!-- remappings -->
     <remap from="scan" to="$(arg scan_topic)"/>
   </node>
+
+  <!-- move_base -->
+  <include file="$(find diffbot_navigation)/launch/move_base.launch">
+    <!-- arg name="model" value="$(arg model)" /-->
+    <arg name="local_planner" value="$(arg local_planner)" />
+    <arg name="move_forward_only" value="$(arg move_forward_only)"/>
+    <arg name="cmd_vel_topic" value="/diffbot/mobile_base_controller/cmd_vel" />
+  </include>
 </launch>
