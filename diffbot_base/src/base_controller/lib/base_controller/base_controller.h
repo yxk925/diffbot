@@ -177,6 +177,8 @@ namespace diffbot {
             ros::Time imu;
             // Time when the last debug message was logged.
             ros::Time debug;
+            // Time when the last encoder msg was received.
+            ros::Time encoder;
 
             /**
              * @brief Construct a new Last Update Time object
@@ -190,7 +192,8 @@ namespace diffbot {
                 : command_received(start.toSec(), start.toNSec())
                 , control(start.toSec(), start.toNSec())
                 , imu(start.toSec(), start.toNSec())
-                , debug(start.toSec(), start.toNSec()) {};
+                , debug(start.toSec(), start.toNSec())
+                , encoder(start.toSec(), start.toNSec()) {};
         } last_update_time_;
 
         /**
@@ -558,6 +561,8 @@ void diffbot::BaseController<TMotorController, TMotorDriver>::eStop()
 {
     wheel_cmd_velocity_left_ = 0;
     wheel_cmd_velocity_right_ = 0;
+    p_motor_controller_left_->setSpeed(0);
+    p_motor_controller_right_->setSpeed(0);
 }
 
 template <typename TMotorController, typename TMotorDriver>

@@ -12,6 +12,7 @@ class EncoderAdpter
 
     int32_t read();
     void write(int32_t p);
+    static ros::Time last_update_time();
   private:
     const unsigned char channel_;
 };

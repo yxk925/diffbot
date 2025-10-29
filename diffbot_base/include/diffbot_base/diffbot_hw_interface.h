@@ -21,12 +21,14 @@
 namespace diffbot_base
 {
     const unsigned int NUM_JOINTS = 2;
+    const double STATE_TIMEOUT = 1.0; // seconds
 
     struct JointState
     {
         float angular_position_;
         float angular_velocity_;
     };
+    ros::Time last_update_time_;
 
     /// \brief Hardware interface for a robot
     class DiffBotHWInterface : public hardware_interface::RobotHW
@@ -225,6 +227,7 @@ namespace diffbot_base
         // Array to store the received encoder tick values from the \ref sub_encoder_ticks_ subscriber
         int encoder_ticks_[NUM_JOINTS];
         JointState measured_joint_states_[NUM_JOINTS];
+        bool ever_received_measured_joint_states_ = false;
 
         DiffbotBasePID pids_[NUM_JOINTS];
     };  // class DiffBotHWInterface

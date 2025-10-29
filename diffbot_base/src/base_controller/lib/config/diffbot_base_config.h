@@ -25,7 +25,7 @@
 #define UPDATE_RATE_DEBUG 5
 
 #define E_STOP_COMMAND_RECEIVED_DURATION 50 // Stop motors if no command was received after this amount of seconds
-
+#define E_STOP_ENCODER_NO_UPDATE_DURATION 1 // Stop motors if no encoder update was received after this amount of micro seconds
 
 
 #define PWM_MAX pow(2, PWM_BITS) - 1

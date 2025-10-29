@@ -4,7 +4,7 @@
 #include "base_controller/base_controller.h"
 #include "motor_controllers/lx98n/lx98n_controller.h"
 #include "motor_controllers/lx98n/lx98n_motor_driver.h"
-
+#include "encoder/encoder_roscompanion.h"
 
 using namespace diffbot;
 
@@ -44,27 +44,45 @@ public:
     {
         // The main control loop for the base_conroller.
         // This block drives the robot based on a defined control rate
-        ros::Duration command_dt = ros::Time::now() - base_controller.lastUpdateTime().control;
-        if (command_dt.toSec() >= ros::Duration(1.0 / base_controller.publishRate().control_, 0).toSec())
+        if (base_controller.lastUpdateTime().encoder < roscompanion::EncoderAdpter::last_update_time())
         {
             base_controller.read();
-            base_controller.write();
-            base_controller.lastUpdateTime().control = ros::Time::now();
+            base_controller.lastUpdateTime().encoder = roscompanion::EncoderAdpter::last_update_time();
+            if(base_controller.debug())
+            {
+                ros::Duration debug_dt = ros::Time::now() - base_controller.lastUpdateTime().debug;
+                if (debug_dt.toSec() >= base_controller.publishRate().period().debug_)
+                {
+                    base_controller.printDebug();
+                    base_controller.lastUpdateTime().debug = ros::Time::now();
+                }
+            }
         }
 
         // This block stops the motor when no wheel command is received
         // from the high level hardware_interface::RobotHW
-        command_dt = ros::Time::now() - base_controller.lastUpdateTime().command_received;
-        if (command_dt.toSec() >= ros::Duration(E_STOP_COMMAND_RECEIVED_DURATION, 0).toSec())
-        {
-            ROS_FATAL("Emergency STOP");
-            base_controller.eStop();
-        }
+        // ros::Duration command_dt = ros::Time::now() - base_controller.lastUpdateTime().command_received;
+        // ros::Duration encoder_dt = ros::Time::now() - base_controller.lastUpdateTime().encoder;
+        // if (encoder_dt.toSec() >= ros::Duration(E_STOP_ENCODER_NO_UPDATE_DURATION, 0).toSec() ||
+        //     (command_dt.toSec() >= ros::Duration(E_STOP_COMMAND_RECEIVED_DURATION, 0).toSec()))
+        // {
+        //     ROS_FATAL("Emergency STOP");
+        //     base_controller.eStop();
+        // } else {
+        //     command_dt = ros::Time::now() - base_controller.lastUpdateTime().control;
+        //     if (command_dt.toSec() >= ros::Duration(1.0 / base_controller.publishRate().control_, 0).toSec())
+        //     {
+        //         base_controller.write();
+        //         base_controller.lastUpdateTime().control = ros::Time::now();
+        //     }
+        // }
+
+        
 
         // This block publishes the IMU data based on a defined imu rate
-        ros::Duration imu_dt = ros::Time::now() - base_controller.lastUpdateTime().imu;
-        if (imu_dt.toSec() >= base_controller.publishRate().period().imu_)
-        {
+        // ros::Duration imu_dt = ros::Time::now() - base_controller.lastUpdateTime().imu;
+        // if (imu_dt.toSec() >= base_controller.publishRate().period().imu_)
+        // {
             // Sanity check if the IMU is connected
             /*
             if (!imu_is_initialized)
@@ -81,18 +99,10 @@ public:
             }
             base_controller.lastUpdateTime().imu = ros::Time::now();
             */
-        }
+        // }
 
         // This block displays the encoder readings. change DEBUG to 0 if you don't want to display
-        if(base_controller.debug())
-        {
-            ros::Duration debug_dt = ros::Time::now() - base_controller.lastUpdateTime().debug;
-            if (debug_dt.toSec() >= base_controller.publishRate().period().debug_)
-            {
-                base_controller.printDebug();
-                base_controller.lastUpdateTime().debug = ros::Time::now();
-            }
-        }
+
     }
 };
 
@@ -105,7 +115,7 @@ int main(int argc, char **argv)
   
   node.setup();
 
-  ros::Rate loop_rate(10);
+  ros::Rate loop_rate(300);
   
   while (ros::ok())
   {

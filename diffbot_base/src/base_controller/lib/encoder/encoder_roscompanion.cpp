@@ -10,7 +10,9 @@ std::string kEncoderTopName = "/encoders_array";
 std::vector<int32_t> position_data;
 ros::Subscriber encoder_sub;
 std::vector<int32_t> pre_received_data;
+ros::Time g_last_update_time;
 
+bool debug = false;
 // 定义回调函数：当收到新消息时自动执行
 void encoderArrayCallback(const std_msgs::Int32MultiArray& msg) {
   for (int i = 0; i < msg.data.size(); ++i) {
@@ -31,9 +33,14 @@ void encoderArrayCallback(const std_msgs::Int32MultiArray& msg) {
     } else {
       position_data[i] += delta;
     }
+
+    if (debug) {
+      ROS_INFO("""Encoder %d: Current Value: %d, Delta: %d, Position: %d", i, msg.data[i], delta, position_data[i]);
+    }
   }
 
   pre_received_data = msg.data;
+  g_last_update_time = ros::Time::now();
 }
 
 // 创建订阅者，指定话题名和回调函数
@@ -43,6 +50,7 @@ EncoderAdpter::EncoderAdpter(ros::NodeHandle& nh, unsigned char channel)
 {
     // Initialize the subscriber only once
     if (encoder_sub.getTopic() == "") {
+        g_last_update_time = ros::Time::now();
         encoder_sub = nh.subscribe(kEncoderTopName, 10, encoderArrayCallback);
     }
 }
@@ -60,6 +68,11 @@ void EncoderAdpter::write(int32_t p)
   if (channel_ < position_data.size()) {
       position_data[channel_] = p;
   }
+}
+
+ros::Time EncoderAdpter::last_update_time()
+{
+  return g_last_update_time;
 }
     
 

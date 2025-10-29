@@ -74,7 +74,7 @@ namespace diffbot_base
         init(nh_, nh_);
 
         // Wait for encoder messages being published
-        isReceivingMeasuredJointStates(ros::Duration(10));
+        ever_received_measured_joint_states_ = isReceivingMeasuredJointStates(ros::Duration(10));
     }
 
  
@@ -112,13 +112,14 @@ namespace diffbot_base
             encoder_ticks_[i] = 0.0;
             measured_joint_states_[i].angular_position_ = 0.0;
             measured_joint_states_[i].angular_velocity_ = 0.0;
+            last_update_time_ = ros::Time::now();
 
             // Initialize the pid controllers for the motors using the robot namespace
             std::string pid_namespace = "pid/" + motor_names[i];
             ROS_INFO_STREAM("pid namespace: " << pid_namespace);
             ros::NodeHandle nh(root_nh, pid_namespace);
             // TODO implement builder pattern to initialize values otherwise it is hard to see which parameter is what.
-            pids_[i].init(nh, 0.9, 0.5, 0.1, 0.01, 3.5, -3.5, false, max_velocity_, -max_velocity_);
+            pids_[i].init(nh, 0.8, 0.35, 0.5, 0.01, 3.5, -3.5, false, max_velocity_, -max_velocity_);
             // pids_[i].setOutputLimits(max_velocity_, -max_velocity_);
         }
 
@@ -172,9 +173,24 @@ namespace diffbot_base
         double motor_constant_right_inv = (gain_ + trim_) / motor_constant_;
         double motor_constant_left_inv = (gain_ - trim_) / motor_constant_;
 
+        ros::Duration dt = ros::Time::now() - last_update_time_;
+        if (dt.toSec() < STATE_TIMEOUT)
+        {
+            joint_velocity_commands_[0] = joint_velocity_commands_[0] * motor_constant_left_inv;
+            joint_velocity_commands_[1] = joint_velocity_commands_[1] * motor_constant_right_inv;
+        } 
+        else
+        {
+            if (ever_received_measured_joint_states_)
+            {
+                ROS_ERROR_THROTTLE(1, "No measured joint states received for %.3f sec. Emergency STOP!", dt.toSec());
 
-        joint_velocity_commands_[0] = joint_velocity_commands_[0] * motor_constant_left_inv;
-        joint_velocity_commands_[1] = joint_velocity_commands_[1] * motor_constant_right_inv;
+                joint_velocity_commands_[0] = 0.0;
+                joint_velocity_commands_[1] = 0.0;
+            }
+
+            // ROS_ERROR("State TIMEOUT, Emergecy STOP, Long time since last update: %.3f sec", dt.toSec());
+        }
 
 
         // Publish the desired (commanded) angular wheel joint velocities
@@ -374,6 +390,7 @@ namespace diffbot_base
         {
             measured_joint_states_[i].angular_position_ = msg_joint_states->position[i];
             measured_joint_states_[i].angular_velocity_ = msg_joint_states->velocity[i];
+            last_update_time_ = ros::Time::now();
         }
         //ROS_DEBUG_STREAM_THROTTLE(1, "Left encoder ticks: " << encoder_ticks_[0]);
         //ROS_DEBUG_STREAM_THROTTLE(1, "Right encoder ticks: " << encoder_ticks_[1]);
