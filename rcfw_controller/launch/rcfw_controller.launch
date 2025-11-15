@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- Launch file for rcfw_controller node -->
+  <node pkg="rcfw_controller" type="rcfw_controller_node.py" name="rcfw_controller" output="screen"/>
+</launch>
