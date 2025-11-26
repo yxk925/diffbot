@@ -241,8 +241,8 @@ namespace diffbot_base
         //     right_motor.data += right_offset * (threshold - right_motor.data) / threshold;
         // }
 
-        pub_left_motor_value_.publish(left_motor);
-        pub_right_motor_value_.publish(right_motor);
+        // pub_left_motor_value_.publish(left_motor);
+        // pub_right_motor_value_.publish(right_motor);
 
 
         if (debug_)

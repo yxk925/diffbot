@@ -1,5 +1,8 @@
 <?xml version="1.0"?>
 <launch>
   <!-- Launch file for rcfw_controller node -->
-  <node pkg="rcfw_controller" type="rcfw_controller_node.py" name="rcfw_controller" output="screen"/>
+  <node pkg="rcfw_controller" type="rcfw_controller_node.py" name="rcfw_controller" output="screen">
+    <remap from="/wheel_cmd_velocities" to="/diffbot/wheel_cmd_velocities"/>
+    <remap from="/measured_joint_states" to="/diffbot/measured_joint_states"/>
+  </node>
 </launch>

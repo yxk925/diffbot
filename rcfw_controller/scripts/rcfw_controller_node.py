@@ -2,6 +2,7 @@
 """rcfw_controller_node.py - simple heartbeat node for rcfw_controller package"""
 
 import rospy
+from rcfw_controller import RcfwController
 from std_msgs.msg import String
 
 
@@ -9,6 +10,8 @@ def main():
     rospy.init_node('rcfw_controller')
     pub = rospy.Publisher('rcfw_heartbeat', String, queue_size=1)
     rate = rospy.Rate(1)  # 1 Hz
+    
+    controller = RcfwController() 
     rospy.loginfo('rcfw_controller node started')
     while not rospy.is_shutdown():
         pub.publish('alive')
