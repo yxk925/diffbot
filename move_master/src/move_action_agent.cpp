@@ -82,6 +82,28 @@ bool MoveActionAgent::turnRight(float angle)
 
   return true;
 }
+bool MoveActionAgent::move(float angle, float distance)
+{
+  ROS_INFO("[MoveActionAgent]move, angle:%f, distance:%f", angle, distance);
+  geometry_msgs::Pose pose;
+  pose.position.x = distance * cos(angle);
+  pose.position.y = distance * sin(angle);
+  pose.orientation.z = angle;
+  pose.orientation.w = 1.0;
+
+  if (!move(pose)) {
+    ROS_ERROR("[MoveActionAgent][move]move FAILED");
+    return false;
+  }
+
+  if (distance > 0) {
+    state_ = kForwardMoving;
+  } else {
+    state_ = kBackwardMoving;
+  }
+
+  return true;
+}
 
 bool MoveActionAgent::move(const geometry_msgs::Pose& pose)
 {

@@ -24,6 +24,7 @@ class MoveActionAgent
     bool moveBackward(float distance);
     bool turnLeft(float angle);
     bool turnRight(float angle);
+    bool move(float angle, float distance);
     bool move(const geometry_msgs::Pose& pose);
     bool stop();
     State getState();

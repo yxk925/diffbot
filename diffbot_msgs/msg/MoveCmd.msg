@@ -5,6 +5,8 @@ int32 kTurnRight=4
 int32 kStop=5
 int32 kShutdown=6
 int32 kFollowme=7
+int32 kMove=8
 
 int32 cmd
 string param
+string parma2
