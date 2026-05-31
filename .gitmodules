@@ -10,3 +10,9 @@
 [submodule "realtime_reid_ros"]
 	path = realtime_reid_ros
 	url = git@gitee.com:yxk925/realtime_reid_ros.git
+[submodule "ros_rknn_yolo"]
+	path = ros_rknn_yolo
+	url = git@gitee.com:yxk925/ros_rknn_yolo.git
+[submodule "vision_msgs"]
+	path = vision_msgs
+	url = git@gitee.com:yxk925/vision_msgs.git
